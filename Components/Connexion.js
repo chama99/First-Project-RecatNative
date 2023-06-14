@@ -1,9 +1,9 @@
 import React, { useState } from 'react';
-import { Image, View, TextInput, TouchableOpacity, Text, SafeAreaView } from 'react-native';
+import { Image,  TextInput, TouchableOpacity, Text, SafeAreaView } from 'react-native';
 import appStyles from '../styles/appStyles';
 import formStyles from '../styles/formStyles';
 
-const Profil = ({navigation}) => {
+const Connexion = ({navigation}) => {
     const [password, setPassword] = useState('');
     const goToCreateAccount = () => {
         navigation.navigate('Compte');
@@ -37,4 +37,4 @@ const Profil = ({navigation}) => {
     );
 };
 
-export default Profil;
+export default Connexion;

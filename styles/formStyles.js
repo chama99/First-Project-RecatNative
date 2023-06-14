@@ -1,43 +1,56 @@
 // formStyles.js
 
 import { StyleSheet } from 'react-native';
+import { Dimensions } from 'react-native';
+
+const { height, width } = Dimensions.get('window');
 
 export default StyleSheet.create({
+    col:{
+        color:'black'
+    },
     text: {
         fontWeight: 'bold',
-        marginVertical: 4,
-        fontSize:40,
-        textAlign:'center'
+        marginVertical: height * 0.01, // Utilisation de 1% de la hauteur de l'écran comme marge verticale
+        fontSize: width * 0.08, // Utilisation de 5% de la largeur de l'écran comme taille de police
+        textAlign: 'center',
+        color:'rgb(147,112,300)'
+    },
+    textc:{
+        marginVertical: height * 0.01, // Utilisation de 1% de la hauteur de l'écran comme marge verticale
+         // Utilisation de 5% de la largeur de l'écran comme taille de police
+        textAlign: 'center',
+        color: 'rgb(147,112,300)'
     },
     input: {
-        height: 40,
-        width:250,
+        height: height * 0.06,
+        width: width * 0.6, // Utilisation de 60% de la largeur de l'écran comme largeur de l'input
         borderColor: 'pink',
         borderWidth: 2,
-        marginBottom: 30,
-
-        borderRadius: 5,
-        paddingHorizontal: 15,
+       
+        borderRadius: 8,
+        paddingHorizontal: width * 0.01,
+        marginTop: height * 0.02,
     },
     button: {
         backgroundColor: 'pink',
-        paddingVertical: 10,
-        paddingHorizontal: 20,
-        borderRadius: 5,
-        
+        paddingVertical: height * 0.01, // Utilisation de 2% de la hauteur de l'écran comme padding vertical
+        paddingHorizontal: width * 0.03, // Utilisation de 5% de la largeur de l'écran comme padding horizontal
+        borderRadius: 8,
+        width: width* 0.3,
+        alignSelf: 'center', // Aligner le bouton au centre horizontalement
+        marginTop: height * 0.02,
     },
     buttonText: {
         color: 'white',
-        fontSize: 16,
+        fontSize: width * 0.04, // Utilisation de 4% de la largeur de l'écran comme taille de police
         fontWeight: 'bold',
         textAlign: 'center',
-       
     },
-    image:{
-    resizeMode: 'cover',
-    height: 250,
-    width: 500,
-    alignSelf: 'center',
-   
-    }
+    image: {
+        resizeMode: 'cover',
+        height: height * 0.3, // Utilisation de 30% de la hauteur de l'écran comme hauteur de l'image
+        width: width * 0.9, // Utilisation de 90% de la largeur de l'écran comme largeur de l'image
+        alignSelf: 'center',
+    },
 });

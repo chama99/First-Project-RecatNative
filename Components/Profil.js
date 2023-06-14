@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Image, View, TextInput, TouchableOpacity, Text ,Button} from 'react-native';
+import { Image, View, TextInput, TouchableOpacity, Text, SafeAreaView } from 'react-native';
 import appStyles from '../styles/appStyles';
 import formStyles from '../styles/formStyles';
 
@@ -11,7 +11,7 @@ const Profil = ({navigation}) => {
 
 
     return (
-        <View style={appStyles.container}>
+        <SafeAreaView  style={appStyles.container}>
             <Text style={formStyles.text}>Connexion</Text>
 
             <TextInput
@@ -26,14 +26,14 @@ const Profil = ({navigation}) => {
               
             />
             <TouchableOpacity style={formStyles.button}>
-                <Text style={formStyles.buttonText}>Soumettre</Text>
+                <Text style={formStyles.buttonText}>S'identifier</Text>
             </TouchableOpacity>
-           
-            <Button title="Créer un compte" onPress={goToCreateAccount} />
-            <Text>Mot de passe oublié ?</Text>
-            
+            <Text style={formStyles.textc}>Mot de passe oublié ?</Text>
+            <TouchableOpacity onPress={goToCreateAccount}>
+                <Text style={formStyles.textc}> <Text style={formStyles.col}>Ne pas avoir de compte ?</Text> S'inscrire</Text>
+            </TouchableOpacity>
             <Image source={require('../assets/profil.png')} style={formStyles.image} />
-        </View>
+        </SafeAreaView>
     );
 };
 

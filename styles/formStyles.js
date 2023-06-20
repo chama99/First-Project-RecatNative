@@ -32,6 +32,7 @@ export default StyleSheet.create({
         paddingHorizontal: width * 0.01,
         marginTop: height * 0.01,
     },
+   
     button: {
         backgroundColor: 'pink',
         paddingVertical: height * 0.01, // Utilisation de 2% de la hauteur de l'écran comme padding vertical
@@ -52,5 +53,25 @@ export default StyleSheet.create({
         height: height * 0.3, // Utilisation de 30% de la hauteur de l'écran comme hauteur de l'image
         width: width * 0.9, // Utilisation de 90% de la largeur de l'écran comme largeur de l'image
         alignSelf: 'center',
+    },
+    imgp: {
+        resizeMode: 'cover',
+        height: height * 0.15, // Utilisation de 30% de la hauteur de l'écran comme hauteur de l'image
+        width: width * 0.3, // Utilisation de 90% de la largeur de l'écran comme largeur de l'image
+        alignSelf: 'center',
+        borderRadius: 50,
+    },
+    iconContainer: {
+        position: 'absolute',
+        marginTop: height * 0.23,
+        left: '95%',
+        transform: [
+            { translateX: -20 }, // Adjust the value to center the icon horizontally
+            { translateY: -20 }, // Adjust the value to center the icon vertically
+        ],
+    },
+    icon: {
+        fontSize: 20,
+        color: 'pink',
     },
 });

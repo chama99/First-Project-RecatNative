@@ -1,20 +1,20 @@
-import React, { useState ,useRef} from 'react';
+import React, { useState } from 'react';
 import { View, TextInput, TouchableOpacity, Text, Alert, Image } from 'react-native';
 import { FontAwesome } from '@expo/vector-icons';
 import appStyles from '../styles/appStyles';
 import formStyles from '../styles/formStyles';
 import * as ImagePicker from 'expo-image-picker';
-import { Camera } from 'expo-camera';
 import axios from 'axios';
-/** register user function */
+
 export async function registerUser(nom, email, password) {
     try {
-        const response = await axios.post('http://192.168.56.1:6000/register', { nom, email, password });
+        const response = await axios.post('http://192.168.1.16:6000/register', { nom, email, password });
         return Promise.resolve(response.data.mssg); // Renvoyer la réponse du serveur
     } catch (error) {
         return Promise.reject({ error });
     }
 }
+
 
 
 
@@ -26,14 +26,9 @@ function Compte() {
     const [confirmPassword, setConfirmPassword] = useState('');
     const defaultImageSource = require('../assets/prof.png');
     const [selectedImageSource, setSelectedImageSource] = useState(defaultImageSource);
-    const [capturedImage, setCapturedImage] = useState(null);
-    const cameraRef = useRef(null);
-    const handleCameraCapture = async () => {
-        if (cameraRef.current) {
-            const photo = await cameraRef.current.takePictureAsync();
-            setCapturedImage(photo.uri);
-        }
-    };
+   
+ 
+   
 
     const handleImagePicker = async () => {
         const result = await ImagePicker.launchImageLibraryAsync();
@@ -136,13 +131,7 @@ function Compte() {
             <TouchableOpacity onPress={handleImagePicker} style={formStyles.iconContainer}>
                 <FontAwesome name="image" style={formStyles.icon} />
             </TouchableOpacity>
-            <Camera style={formStyles.camera} ref={cameraRef} />
-
            
-
-            <TouchableOpacity onPress={handleCameraCapture}>
-                <Text>Capturer une photo</Text>
-            </TouchableOpacity>
 
             <TextInput
                 style={formStyles.input}

@@ -47,13 +47,14 @@ exports.login=(email,password)=>{
         }).then((user)=>{
             if(!user){
                 mongoose.disconnect()
-                reject("Mot de passe ou email invalide")
+                const mssg = "Mot de passe ou email invalide"
+                resolve(mssg)
             }else{
                 bcrypt.compare(password,user.password).then((same)=>{
                     if(same){
                     //ykhazynly data mou3ayna ,token nestha9ouh cote sécurite bch net2kdou mn user msajill aandy 
                     let token=jwt.sign({id:user._id},privatekey,{
-                        expiresIn:'1h'
+                        expiresIn:'4h'
                     })
                     mongoose.disconnect()
                     resolve(token)
@@ -61,7 +62,8 @@ exports.login=(email,password)=>{
                     }
                     else{
                         mongoose.disconnect()
-                        reject("Mot de passe ou email invalide")
+                        const mssg = "Mot de passe ou email invalide"
+                        resolve(mssg)
                     }
                 }).catch((err)=>{
                     mongoose.disconnect()

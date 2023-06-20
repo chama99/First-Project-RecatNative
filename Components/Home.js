@@ -1,8 +1,8 @@
 import React from 'react';
 import { View, Text, Button } from 'react-native';
-import Compte from './Compte'
 
-const Screen1 = ({ navigation }) => {
+
+const Home = ({ navigation }) => {
     const goToCreateAccount = () => {
         navigation.navigate('Compte');
     };
@@ -15,4 +15,4 @@ const Screen1 = ({ navigation }) => {
     );
 };
 
-export default Screen1;
+export default Home;

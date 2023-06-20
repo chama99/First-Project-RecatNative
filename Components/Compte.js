@@ -104,18 +104,24 @@ function Compte() {
         try {
             const response = await registerUser(name, email, password);
             console.log('Server response:', response);
+            if (response === "Cet email existe déja"){
+                Alert.alert('Erreur',response)
+            }else{
+                Alert.alert('Valider', 'Compte créé avec succès.')
+                setName('');
+                setPrenom('');
+                setEmail('');
+                setPassword('');
+                setConfirmPassword('');
+                setSelectedImageSource(defaultImageSource)
+            }
             
         } catch (error) {
             console.log('Error:', error);
         }
         
-        // Reset field values
-        setName('');
-        setPrenom('');
-        setEmail('');
-        setPassword('');
-        setConfirmPassword('');
-        setSelectedImageSource(defaultImageSource)
+        
+        
         
     };
 

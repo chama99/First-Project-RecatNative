@@ -48,7 +48,7 @@ const Connexion = ({ navigation }) => {
                 await AsyncStorage.setItem('accessToken', response.token);
 
                 console.log('Token:', response.token); // Afficher le jeton dans la console
-                navigation.navigate('Compte');
+                navigation.navigate('Home');
             }
 
         } catch (error) {

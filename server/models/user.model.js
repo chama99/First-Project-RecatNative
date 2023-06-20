@@ -19,7 +19,7 @@ exports.register=(nom,email,password)=>{
     }).then((doc)=>{
         if(doc){
             mongoose.disconnect()
-            reject('Cet email existe déja')
+            resolve('Cet email existe déja')
         }else{
            bcrypt.hash(password,10).then((hashPass)=>{
             let user = new User ({

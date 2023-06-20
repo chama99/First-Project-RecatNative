@@ -22,7 +22,7 @@ route.get('/users',verifytoken,(req, res) => {
 })
 route.post('/register',(req,res)=>{
     routemodel.register(req.body.nom,req.body.email,req.body.password)
-    .then((user)=>res.status(200).json({user:user,mssg:"added"}))
+    .then((user)=>res.status(200).json({mssg:user}))
     .catch((err)=>res.status(400).json({err:err}))
 })
 

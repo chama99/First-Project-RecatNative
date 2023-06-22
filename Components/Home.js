@@ -1,17 +1,22 @@
 import React from 'react';
-import { View, Text, Button } from 'react-native';
+import { View, Text, Button, Alert,Image } from 'react-native';
+import axios from 'axios';
+import appStyles from '../styles/appStyles';
+import formStyles from '../styles/formStyles';
+import FastImage from 'react-native-fast-image';
 
-
-const Home = ({ navigation }) => {
+const Home = ({ route }) => {
     const goToCreateAccount = () => {
         navigation.navigate('Compte');
     };
-
+    const { user } = route.params;
+   
     return (
         <View>
-            <Text>Screen 1</Text>
-            <Button title="Créer un compte" onPress={goToCreateAccount} />
+            <Text>Bienvenue, {user.nom} {user.prenom}</Text>
+            <Image ssource={{ uri: user.image.uri }}  />
         </View>
+       
     );
 };
 

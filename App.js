@@ -5,6 +5,7 @@ import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import Compte from './Components/Compte'
 import Home from './Components/Home.js';
+import ImageUpload from './Components/ImageUpload.js';
 const Stack = createNativeStackNavigator();
 
  function App() {
@@ -14,6 +15,7 @@ const Stack = createNativeStackNavigator();
       <Stack.Screen name="Connexion" component={Connexion} options={{ headerShown: false }} />
       <Stack.Screen name="Compte" component={Compte} options={{ headerTitle: '' }}  />
       <Stack.Screen name="Home" component={Home} options={{ headerTitle: '' }} />
+      <Stack.Screen name="ImageUpload" component={ImageUpload} options={{ headerTitle: '' }} />
 
     </Stack.Navigator>
   );

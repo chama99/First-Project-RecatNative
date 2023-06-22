@@ -6,16 +6,29 @@ import formStyles from '../styles/formStyles';
 import * as ImagePicker from 'expo-image-picker';
 import axios from 'axios';
 
-export async function registerUser(nom, email, password) {
+export async function registerUser(nom,prenom,email, password,image) {
     try {
-        const response = await axios.post('http://192.168.1.16:6000/register', { nom, email, password });
+        if (typeof image === 'number'){
+            image = { uri: '../assets/prof.png' };
+        }
+        
+        const response = await axios.post('http://192.168.1.16:6000/register', { nom, prenom, email, password, image: image });
         return Promise.resolve(response.data.mssg); // Renvoyer la réponse du serveur
     } catch (error) {
         return Promise.reject({ error });
     }
 }
 
+export async function registerImage(file) {
+    try {
+      
 
+        const response = await axios.post('http://192.168.1.16:6000/upload', {file});
+        return Promise.resolve(response.data); // Renvoyer la réponse du serveur
+    } catch (error) {
+        return Promise.reject({ error });
+    }
+}
 
 
 function Compte() {
@@ -24,18 +37,24 @@ function Compte() {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [confirmPassword, setConfirmPassword] = useState('');
-    const defaultImageSource = require('../assets/prof.png');
-    const [selectedImageSource, setSelectedImageSource] = useState(defaultImageSource);
+    const defaultImageSource =  require('../assets/prof.png')
+    const [image, setSelectedImageSource] = useState(defaultImageSource);
    
  
    
 
     const handleImagePicker = async () => {
         const result = await ImagePicker.launchImageLibraryAsync();
-        if (!result.cancelled) {
-          
-            setSelectedImageSource({ uri: result.uri });
-        }
+        try {
+            if (!result.canceled) {
+
+                setSelectedImageSource({ uri: result.assets[0].uri });
+                registerImage(result.assets[0].uri)
+            }
+         }catch(err){
+            console.log(err)
+            }
+        
     };
     const handleNameChange = (text) => {
         setName(text);
@@ -92,22 +111,22 @@ function Compte() {
             Alert.alert('Erreur', 'Les mots de passe ne correspondent pas');
             return;
         }
-
+      
         // If all validations pass, create the account
         console.log('Account created:', {
             name,
             prenom,
             email,
             password,
-            selectedImageSource
+            image
         });
         try {
-            const response = await registerUser(name, email, password);
+            const response = await registerUser(name, prenom,email, password,image);
             console.log('Server response:', response);
             if (response === "Cet email existe déja"){
                 Alert.alert('Erreur',response)
             }else{
-                Alert.alert('Valider', 'Compte créé avec succès.')
+                Alert.alert('Succès', 'Compte créé avec succès.')
                 setName('');
                 setPrenom('');
                 setEmail('');
@@ -133,7 +152,7 @@ function Compte() {
 
     return (
         <View style={appStyles.container}>
-            <Image source={selectedImageSource} style={formStyles.imgp} />
+            <Image source={image} style={formStyles.imgp} />
             <TouchableOpacity onPress={handleImagePicker} style={formStyles.iconContainer}>
                 <FontAwesome name="image" style={formStyles.icon} />
             </TouchableOpacity>

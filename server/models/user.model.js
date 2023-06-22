@@ -5,13 +5,15 @@ const jwt=require('jsonwebtoken')
 
 let SchemaUser =mongoose.Schema({
     nom:String,
+    prenom:String,
     email:String,
-    password:String
+    password:String,
+    image:{uri:String}
 })
 var url = 'mongodb://localhost:27017/PremierProjet'
 var User=mongoose.model('user',SchemaUser)
 
-exports.register=(nom,email,password)=>{
+exports.register = (nom,prenom,email,password,image)=>{
   return new Promise ((resolve,reject)=>{
     mongoose.connect(url).then(()=>{
         return User.findOne({email:email})
@@ -24,8 +26,10 @@ exports.register=(nom,email,password)=>{
            bcrypt.hash(password,10).then((hashPass)=>{
             let user = new User ({
                 nom:nom,
+                prenom:prenom,
                 email:email,
-                password:hashPass
+                password:hashPass,
+                image:image
             })
             user.save().then((user)=>{
                 mongoose.disconnect()
@@ -57,7 +61,7 @@ exports.login=(email,password)=>{
                         expiresIn:'4h'
                     })
                     mongoose.disconnect()
-                    resolve(token)
+                    resolve({token,user})
 
                     }
                     else{
@@ -77,6 +81,20 @@ exports.getUsers = () => {
     return new Promise((resolve, reject) => {
         mongoose.connect(url).then(() => {
             return User.find()
+        }).then((doc) => {
+            mongoose.disconnect()
+            resolve(doc)
+        }).catch((err) => {
+            mongoose.disconnect()
+            reject(err)
+        })
+
+    })
+}
+exports.getUsersById = (id) => {
+    return new Promise((resolve, reject) => {
+        mongoose.connect(url).then(() => {
+            return User.findById(id)
         }).then((doc) => {
             mongoose.disconnect()
             resolve(doc)

@@ -45,10 +45,10 @@ const Connexion = ({ navigation }) => {
                 Alert.alert('Erreur', response.token);
             } else {
                 // Stocker le jeton d'accès localement avec AsyncStorage
-                await AsyncStorage.setItem('accessToken', response.token);
+               await AsyncStorage.setItem('accessToken', response.token);
 
-                console.log('Token:', response.token); // Afficher le jeton dans la console
-                navigation.navigate('Home');
+                console.log('Token:', response.user); // Afficher le jeton dans la console
+                navigation.navigate('Home',{ user: response.user });
             }
 
         } catch (error) {
@@ -57,7 +57,7 @@ const Connexion = ({ navigation }) => {
 
     }
     const goToCreateAccount = () => {
-        navigation.navigate('Compte');
+        navigation.navigate('ImageUpload');
     };
 
     return (

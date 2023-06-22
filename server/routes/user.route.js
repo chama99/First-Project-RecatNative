@@ -1,7 +1,7 @@
 const route=require('express').Router()
 const routemodel=require('../models/user.model')
 const jwt=require('jsonwebtoken')
-
+ 
 const privatekey = "this key hdhfkflflfl"
 verifytoken=(req,res,next)=>{
     let token=req.headers.authorization
@@ -20,15 +20,19 @@ route.get('/users',verifytoken,(req, res) => {
     let user=jwt.decode(token,{complete:true})
     routemodel.getUsers().then((mssg) => res.json({users:mssg,user:user})).catch((err) => res.status(400).json(err))
 })
+route.get('/getById/:id', (req, res) => {
+   
+    routemodel.getUsersById(req.params.id).then((mssg) => res.json({ users: mssg})).catch((err) => res.status(400).json(err))
+})
 route.post('/register',(req,res)=>{
-    routemodel.register(req.body.nom,req.body.email,req.body.password)
+    routemodel.register(req.body.nom,req.body.prenom,req.body.email,req.body.password,req.body.image)
     .then((user)=>res.status(200).json({mssg:user}))
     .catch((err)=>res.status(400).json({err:err}))
 })
 
 route.post('/login', (req, res) => {
     routemodel.login(req.body.email, req.body.password)
-        .then((token) => res.status(200).json({ token:token}))
+        .then((token) => res.status(200).json({ token:token.token,user:token.user}))
         .catch((err) => res.status(400).json({ err: err }))
 })
 

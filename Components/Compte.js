@@ -9,7 +9,7 @@ import axios from 'axios';
 export async function registerUser(nom,prenom,email, password,image) {
     try {
         if (typeof image === 'number'){
-            image = { uri: '../assets/prof.png' };
+            image = { uri: "require('../assets/prof.png')" };
         }
         
         const response = await axios.post('http://192.168.1.16:6000/register', { nom, prenom, email, password, image: image });

@@ -10,11 +10,18 @@ const Home = ({ route }) => {
         navigation.navigate('Compte');
     };
     const { user } = route.params;
-   
+    if (user.image.uri === "require('../assets/prof.png')"){
+         ImageSource = require('../assets/prof.png');
+    }else{
+         ImageSource ={uri :user.image.uri}
+    }
     return (
         <View>
-            <Text>Bienvenue, {user.nom} {user.prenom}</Text>
-            <Image ssource={{ uri: user.image.uri }}  />
+            <Text>Bienvenue, {user.nom} {user.prenom} </Text>
+            <Image
+                source={ImageSource}
+                style={{ width: 200, height: 200 }}
+            />
         </View>
        
     );

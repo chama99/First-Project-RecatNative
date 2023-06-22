@@ -57,7 +57,7 @@ const Connexion = ({ navigation }) => {
 
     }
     const goToCreateAccount = () => {
-        navigation.navigate('ImageUpload');
+        navigation.navigate('Compte');
     };
 
     return (

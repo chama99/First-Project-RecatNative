@@ -1,30 +1,34 @@
-import React  from 'react';
-
-import Connexion from './Components/Connexion.js'
+import React from 'react';
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
-import Compte from './Components/Compte'
+import Connexion from './Components/Connexion.js';
+import Deconnexion from './Components/Deconnexion.js';
+import Compte from './Components/Compte';
 import Home from './Components/Home.js';
-import ImageUpload from './Components/ImageUpload.js';
+import 'react-native-gesture-handler';
+import { createDrawerNavigator } from '@react-navigation/drawer';
+
+const Drawer = createDrawerNavigator();
 const Stack = createNativeStackNavigator();
 
- function App() {
+function App() {
   return (
-   
-    <Stack.Navigator >
+    <Stack.Navigator>
       <Stack.Screen name="Connexion" component={Connexion} options={{ headerShown: false }} />
-      <Stack.Screen name="Compte" component={Compte} options={{ headerTitle: '' }}  />
-      <Stack.Screen name="Home" component={Home} options={{ headerTitle: '' }} />
-      <Stack.Screen name="ImageUpload" component={ImageUpload} options={{ headerTitle: '' }} />
+      <Stack.Screen name="Compte" component={Compte} options={{ headerTitle: '',  }} />
+     
+        <Stack.Screen name="Home" component={Home} options={{ headerShown: false }} /> 
+      <Stack.Screen name="Deconnexion" component={Deconnexion} options={{ headerShown: false }} />
 
+      
     </Stack.Navigator>
   );
 }
-export default ()=>{
-  return(
-    <NavigationContainer>
-      <App/>
-      </NavigationContainer>
-  )
-}
 
+export default function MainApp() {
+  return (
+    <NavigationContainer>
+      <App />
+    </NavigationContainer>
+  );
+}

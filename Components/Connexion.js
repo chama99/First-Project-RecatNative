@@ -26,11 +26,7 @@ const Connexion = ({ navigation }) => {
             });
 
            
-            // Stocker le jeton d'accès localement avec AsyncStorage
             
-
-            // Faire d'autres actions après la connexion réussie
-            // Par exemple, naviguer vers une autre vue
             return Promise.resolve(response.data);
            
         } catch (error) {
@@ -40,17 +36,21 @@ const Connexion = ({ navigation }) => {
     const Test = async () => {
         try {
             const response = await login();
+            console.log(response)
           
-            if (response.token === "Mot de passe ou email invalide") {
-                Alert.alert('Erreur', response.token);
+            if (response.mssg === "Mot de passe ou email invalide") {
+                Alert.alert('Erreur', response.mssg);
             } else {
                 // Stocker le jeton d'accès localement avec AsyncStorage
                await AsyncStorage.setItem('accessToken', response.token);
 
-                console.log('Token:', response.user); // Afficher le jeton dans la console
+                console.log('Token:', response.user);
+                setEmail('');
+                setPassword('');
                 navigation.navigate('Home',{ user: response.user });
+                
             }
-
+            
         } catch (error) {
             console.log('Error:', error);
         }
@@ -59,6 +59,7 @@ const Connexion = ({ navigation }) => {
     const goToCreateAccount = () => {
         navigation.navigate('Compte');
     };
+   
 
     return (
         <SafeAreaView style={appStyles.container}>
@@ -68,12 +69,14 @@ const Connexion = ({ navigation }) => {
                 style={formStyles.input}
                 placeholder="Email"
                 keyboardType="email-address"
+                value={email}
                 onChangeText={handleEmailChange}
             />
             <TextInput
                 style={formStyles.input}
                 placeholder="Mot de passe"
                 secureTextEntry={true}
+                value={password}
                 onChangeText={handlePasswordChange}
             />
             <TouchableOpacity style={formStyles.button} onPress={Test}>
@@ -84,6 +87,7 @@ const Connexion = ({ navigation }) => {
                 <Text style={formStyles.textc}><Text style={formStyles.col}>Ne pas avoir de compte ?</Text> S'inscrire</Text>
             </TouchableOpacity>
             <Image source={require('../assets/profil.png')} style={formStyles.image} />
+           
         </SafeAreaView>
     );
 };

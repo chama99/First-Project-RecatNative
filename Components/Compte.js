@@ -19,16 +19,6 @@ export async function registerUser(nom,prenom,email, password,image) {
     }
 }
 
-export async function registerImage(file) {
-    try {
-      
-
-        const response = await axios.post('http://192.168.1.16:6000/upload', {file});
-        return Promise.resolve(response.data); // Renvoyer la réponse du serveur
-    } catch (error) {
-        return Promise.reject({ error });
-    }
-}
 
 
 function Compte() {
@@ -49,7 +39,7 @@ function Compte() {
             if (!result.canceled) {
 
                 setSelectedImageSource({ uri: result.assets[0].uri });
-                registerImage(result.assets[0].uri)
+               
             }
          }catch(err){
             console.log(err)
@@ -112,7 +102,7 @@ function Compte() {
             return;
         }
       
-        // If all validations pass, create the account
+      
         console.log('Account created:', {
             name,
             prenom,
@@ -145,7 +135,7 @@ function Compte() {
     };
 
     const validateEmail = (email) => {
-        // Basic email validation
+       
         const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
         return emailRegex.test(email);
     };

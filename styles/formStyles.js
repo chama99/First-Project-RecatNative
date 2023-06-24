@@ -55,11 +55,12 @@ export default StyleSheet.create({
         alignSelf: 'center',
     },
     imgp: {
-        resizeMode: 'cover',
-        height: height * 0.15, // Utilisation de 30% de la hauteur de l'écran comme hauteur de l'image
-        width: width * 0.3, // Utilisation de 90% de la largeur de l'écran comme largeur de l'image
+        height: height * 0.15, // Utilisation de 15% de la hauteur de l'écran comme hauteur de l'image
+        width: width * 0.3, // Utilisation de 30% de la largeur de l'écran comme largeur de l'image
         alignSelf: 'center',
-        borderRadius: 50,
+        borderRadius: (height * 0.15) / 2, // Utilisation de la moitié de la hauteur pour obtenir un effet de cercle
+        borderWidth: 2, // Largeur de la bordure
+        borderColor: '#fff', // Couleur de la bordure
     },
     iconContainer: {
         position: 'absolute',

@@ -2,6 +2,9 @@ import React, { useEffect, useState } from 'react';
 import { BackHandler, View, Text, Image, StyleSheet, Alert } from 'react-native';
 import { Appbar, BottomNavigation } from 'react-native-paper';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
+import homeStyles from '../styles/homeStyle';
+import { TouchableOpacity } from 'react-native';
+import { FontAwesome } from '@expo/vector-icons';
 
 const Home = ({ route, navigation }) => {
     useEffect(() => {
@@ -28,18 +31,35 @@ const Home = ({ route, navigation }) => {
 
     const renderScene = BottomNavigation.SceneMap({
         home: () => (
-            <View style={styles.contentContainer}>
-                <Text style={styles.greetingText}>Bienvenue, {user.nom} {user.prenom}</Text>
-                <Image source={ImageSource} style={styles.profileImage} />
+            <View style={homeStyles.contentContainer}>
+                <Text>Contenu de la page de Accueil</Text>
             </View>
+            
         ),
         profile: () => (
-            <View style={styles.contentContainer}>
-                <Text>Contenu de la page de profil</Text>
+            
+            <View style={homeStyles.container}>
+                <View style={homeStyles.contentContainer}>
+                    <Image source={ImageSource} style={homeStyles.profileImage} />
+                    <Text style={homeStyles.greetingText}> {user.nom} {user.prenom}</Text>
+              
+                    <Text style={homeStyles.Text}>Email:{user.email}</Text>
+                </View>
+                <View style={homeStyles.Container}>
+                    <TouchableOpacity style={homeStyles.editButton} onPress={goToProfil}>
+                    <FontAwesome name="edit" style={homeStyles.editIcon} />
+                    <Text style={homeStyles.editText}>Modifier le profil</Text>
+                </TouchableOpacity>
+                <TouchableOpacity style={homeStyles.editButton} onPress={console.log('edit profil')}>
+                    <FontAwesome name="edit" style={homeStyles.editIcon} />
+                    <Text style={homeStyles.editText}>Changer mot de passe</Text>
+                </TouchableOpacity>
+                </View>
+                
             </View>
         ),
         logout: () => (
-            <View style={styles.contentContainer}>
+            <View style={homeStyles.contentContainer}>
                 <Text>Êtes-vous sûr de vouloir vous déconnecter ?</Text>
                 <Text>Appuyez sur le bouton "Déconnexion" pour confirmer.</Text>
             </View>
@@ -92,9 +112,12 @@ const Home = ({ route, navigation }) => {
 
         return <Icon name={iconName} size={24} color={color} />;
     };
+    const goToProfil = () => {
+        navigation.navigate('Profil', { user: user });
+    };
 
     return (
-        <View style={styles.container}>
+        <View style={homeStyles.container}>
             
             <BottomNavigation
                 navigationState={{ index, routes }}
@@ -106,35 +129,5 @@ const Home = ({ route, navigation }) => {
     );
 };
 
-const styles = StyleSheet.create({
-    container: {
-        flex: 1,
-        backgroundColor: '#fff',
-    },
-    appbar: {
-        backgroundColor: '#fff',
-        elevation: 0,
-    },
-    appbarTitle: {
-        color: '#000',
-        fontSize: 18,
-        fontWeight: 'bold',
-    },
-    contentContainer: {
-        flex: 1,
-        alignItems: 'center',
-        justifyContent: 'center',
-    },
-    greetingText: {
-        fontSize: 24,
-        fontWeight: 'bold',
-        marginBottom: 20,
-    },
-    profileImage: {
-        width: 200,
-        height: 200,
-        borderRadius: 100,
-    },
-});
 
 export default Home;

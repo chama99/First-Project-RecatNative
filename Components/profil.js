@@ -6,12 +6,12 @@ import formStyles from '../styles/formStyles';
 import * as ImagePicker from 'expo-image-picker';
 import axios from 'axios';
 
-export async function registerUser(nom,prenom,email, password,image) {
+export async function registerUser(nom, prenom, email, password, image) {
     try {
-        if (typeof image === 'number'){
+        if (typeof image === 'number') {
             image = { uri: "require('../assets/prof.png')" };
         }
-        
+
         const response = await axios.post('http://192.168.1.16:6000/register', { nom, prenom, email, password, image: image });
         return Promise.resolve(response.data.mssg); // Renvoyer la réponse du serveur
     } catch (error) {
@@ -21,17 +21,20 @@ export async function registerUser(nom,prenom,email, password,image) {
 
 
 
-function Compte() {
-    const [name, setName] = useState('');
-    const [prenom, setPrenom] = useState('');
-    const [email, setEmail] = useState('');
-    const [password, setPassword] = useState('');
-    const [confirmPassword, setConfirmPassword] = useState('');
-    const defaultImageSource =  require('../assets/prof.png')
-    const [image, setSelectedImageSource] = useState(defaultImageSource);
+function Profil({ route }) {
+    const { user } = route.params;
+    let ImageSource = require('../assets/prof.png');
+    if (user.image.uri !== "require('../assets/prof.png')") {
+        ImageSource = { uri: user.image.uri };
+    }
+    const [name, setName] = useState(user.nom);
+    const [prenom, setPrenom] = useState(user.prenom);
+    const [email, setEmail] = useState(user.email);
    
- 
-   
+    const [image, setSelectedImageSource] = useState(ImageSource);
+
+    
+
 
     const handleImagePicker = async () => {
         const result = await ImagePicker.launchImageLibraryAsync();
@@ -39,12 +42,12 @@ function Compte() {
             if (!result.canceled) {
 
                 setSelectedImageSource({ uri: result.assets[0].uri });
-               
+
             }
-         }catch(err){
+        } catch (err) {
             console.log(err)
-            }
-        
+        }
+
     };
     const handleNameChange = (text) => {
         setName(text);
@@ -105,7 +108,7 @@ function Compte() {
             Alert.alert('Erreur', 'Le mot de passe doit contenir au moins un symbole, une lettre majuscule et avoir une longueur minimale de 8 caractères');
             return;
         }
-      
+
         console.log('Account created:', {
             name,
             prenom,
@@ -114,11 +117,11 @@ function Compte() {
             image
         });
         try {
-            const response = await registerUser(name, prenom,email, password,image);
+            const response = await registerUser(name, prenom, email, password, image);
             console.log('Server response:', response);
-            if (response === "Cet email existe déja"){
-                Alert.alert('Erreur',response)
-            }else{
+            if (response === "Cet email existe déja") {
+                Alert.alert('Erreur', response)
+            } else {
                 Alert.alert('Succès', 'Compte créé avec succès.')
                 setName('');
                 setPrenom('');
@@ -127,23 +130,23 @@ function Compte() {
                 setConfirmPassword('');
                 setSelectedImageSource(defaultImageSource)
             }
-            
+
         } catch (error) {
             console.log('Error:', error);
         }
-        
-        
-        
-        
+
+
+
+
     };
 
     const validateEmail = (email) => {
-       
+
         const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
         return emailRegex.test(email);
     };
     const validatePassword = (password) => {
-       
+
         const symbolRegex = /[-!$%^&*()_+|~=`{}\[\]:";'<>?,.\/]/;
         const uppercaseRegex = /[A-Z]/;
         return symbolRegex.test(password) && uppercaseRegex.test(password) && password.length >= 8;
@@ -154,7 +157,7 @@ function Compte() {
             <TouchableOpacity onPress={handleImagePicker} style={formStyles.iconContainer}>
                 <FontAwesome name="image" style={formStyles.icon} />
             </TouchableOpacity>
-           
+
 
             <TextInput
                 style={formStyles.input}
@@ -175,25 +178,12 @@ function Compte() {
                 onChangeText={handleEmailChange}
                 keyboardType="email-address"
             />
-            <TextInput
-                style={formStyles.input}
-                placeholder="Mot de passe"
-                value={password}
-                onChangeText={handlePasswordChange}
-                secureTextEntry
-            />
-            <TextInput
-                style={formStyles.input}
-                placeholder="Confirmer le mot de passe"
-                value={confirmPassword}
-                onChangeText={handleConfirmPasswordChange}
-                secureTextEntry
-            />
+           
             <TouchableOpacity style={formStyles.button} onPress={handleCreateAccount}>
-                <Text style={formStyles.buttonText}>S'inscrire</Text>
+                <Text style={formStyles.buttonText}>Modifier</Text>
             </TouchableOpacity>
         </View>
     );
 }
 
-export default Compte;
+export default Profil;

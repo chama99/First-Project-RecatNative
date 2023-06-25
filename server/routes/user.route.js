@@ -22,7 +22,7 @@ route.get('/users',verifytoken,(req, res) => {
 })
 route.get('/getById/:id', (req, res) => {
    
-    routemodel.getUsersById(req.params.id).then((mssg) => res.json({ users: mssg})).catch((err) => res.status(400).json(err))
+    routemodel.getUsersById(req.params.id).then((mssg) => res.json({ user: mssg})).catch((err) => res.status(400).json(err))
 })
 route.post('/register',(req,res)=>{
     routemodel.register(req.body.nom,req.body.prenom,req.body.email,req.body.password,req.body.image)
@@ -35,6 +35,8 @@ route.post('/login', (req, res) => {
         .then((token) => res.status(200).json({ token:token.token,user:token.user,mssg:token}))
         .catch((err) => res.status(400).json({ err: err }))
 })
-
+route.patch('/UpdateUser', (req, res) => {
+    routemodel.updateUser(req.body.id, req.body.nom, req.body.prenom, req.body.email,req.body.image).then((mssg) => res.json(mssg)).catch((err) => res.status(400).json(err))
+})
 
 module.exports=route

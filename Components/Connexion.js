@@ -47,7 +47,7 @@ const Connexion = ({ navigation }) => {
                 console.log('Token:', response.user);
                 setEmail('');
                 setPassword('');
-                navigation.navigate('Home',{ user: response.user });
+                navigation.navigate('Home',{ id: response.user._id });
                 
             }
             

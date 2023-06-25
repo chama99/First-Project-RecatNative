@@ -6,14 +6,13 @@ import formStyles from '../styles/formStyles';
 import * as ImagePicker from 'expo-image-picker';
 import axios from 'axios';
 
-export async function registerUser(nom, prenom, email, password, image) {
-    try {
-        if (typeof image === 'number') {
-            image = { uri: "require('../assets/prof.png')" };
-        }
 
-        const response = await axios.post('http://192.168.1.16:6000/register', { nom, prenom, email, password, image: image });
-        return Promise.resolve(response.data.mssg); // Renvoyer la réponse du serveur
+export async function ModifierUser(id,nom,prenom,email,image) {
+    try {
+       
+
+        const response = await axios.patch('http://192.168.1.16:6000/UpdateUser', {id, nom, prenom, email,  image });
+        return Promise.resolve(response.data); // Renvoyer la réponse du serveur
     } catch (error) {
         return Promise.reject({ error });
     }
@@ -21,12 +20,15 @@ export async function registerUser(nom, prenom, email, password, image) {
 
 
 
-function Profil({ route }) {
-    const { user } = route.params;
+function Profil({ route, navigation }) {
+    const { user, updateUserProfile } = route.params;
+   
     let ImageSource = require('../assets/prof.png');
-    if (user.image.uri !== "require('../assets/prof.png')") {
+    if (user && user.image && user.image.uri !== "require('../assets/prof.png')") {
         ImageSource = { uri: user.image.uri };
     }
+
+    
     const [name, setName] = useState(user.nom);
     const [prenom, setPrenom] = useState(user.prenom);
     const [email, setEmail] = useState(user.email);
@@ -61,13 +63,7 @@ function Profil({ route }) {
         setEmail(text);
     };
 
-    const handlePasswordChange = (text) => {
-        setPassword(text);
-    };
-
-    const handleConfirmPasswordChange = (text) => {
-        setConfirmPassword(text);
-    };
+   
 
     const handleCreateAccount = async () => {
         // Basic validation
@@ -90,48 +86,20 @@ function Profil({ route }) {
             return;
         }
 
-        if (password === '') {
-            Alert.alert('Erreur', "S'il vous plaît entrez votre mot de passe");
-            return;
-        }
+       
+       
 
-        if (confirmPassword === '') {
-            Alert.alert('Erreur', "Veuillez confirmer votre mot de passe");
-            return;
-        }
-
-        if (password !== confirmPassword) {
-            Alert.alert('Erreur', 'Les mots de passe ne correspondent pas');
-            return;
-        }
-        if (!validatePassword(password)) {
-            Alert.alert('Erreur', 'Le mot de passe doit contenir au moins un symbole, une lettre majuscule et avoir une longueur minimale de 8 caractères');
-            return;
-        }
-
-        console.log('Account created:', {
-            name,
-            prenom,
-            email,
-            password,
-            image
-        });
+      
         try {
-            const response = await registerUser(name, prenom, email, password, image);
+            const response = await ModifierUser(user._id,name, prenom, email,  image);
             console.log('Server response:', response);
-            if (response === "Cet email existe déja") {
-                Alert.alert('Erreur', response)
-            } else {
-                Alert.alert('Succès', 'Compte créé avec succès.')
-                setName('');
-                setPrenom('');
-                setEmail('');
-                setPassword('');
-                setConfirmPassword('');
-                setSelectedImageSource(defaultImageSource)
-            }
+            // Appeler la fonction updateUserProfile passée depuis le composant Home
+            updateUserProfile();
 
-        } catch (error) {
+            // Revenir à l'écran Home
+            navigation.goBack();
+              
+                } catch (error) {
             console.log('Error:', error);
         }
 
@@ -145,12 +113,7 @@ function Profil({ route }) {
         const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
         return emailRegex.test(email);
     };
-    const validatePassword = (password) => {
-
-        const symbolRegex = /[-!$%^&*()_+|~=`{}\[\]:";'<>?,.\/]/;
-        const uppercaseRegex = /[A-Z]/;
-        return symbolRegex.test(password) && uppercaseRegex.test(password) && password.length >= 8;
-    };
+   
     return (
         <View style={appStyles.container}>
             <Image source={image} style={formStyles.imgp} />

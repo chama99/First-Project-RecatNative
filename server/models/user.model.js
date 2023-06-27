@@ -6,6 +6,14 @@ const nodemailer = require('nodemailer');
 
 const { v4: uuidv4 } = require('uuid');
 const path = require('path');
+const PasswordResetSchema = mongoose.Schema({
+    userId: String,
+
+    resetString: String,
+    createdAt: Date,
+    expiresAt: Date,
+});
+let PasswordReset = mongoose.model('PasswordReset', PasswordResetSchema);
 const UserVerificationSchema = mongoose.Schema({
     userId: String,
 
@@ -324,5 +332,78 @@ exports.updatePassword = (id, password) => {
 
 
 
+exports.ForgetPassword = (email, redirectUrl) => {
+    return new Promise((resolve, reject) => {
+        mongoose.connect(url).then(() => {
+            return User.findOne({ email: email })
+        }).then((user) => {
+            if (!user) {
+                mongoose.disconnect()
+                const mssg = " email n'existe pas"
+                resolve(mssg)
+            } else {
+                if (!user.verified) {
+                    const mssg = "L'e-mail n'a pas été vérifié."
+                    resolve(mssg)
+                } else {
+                    //continuer avec l'e-mail pour réinitialiser le mot de passe
+                    resolve(user)
+                    sendResetEmail(user,redirectUrl)
+                   
+                }
 
 
+
+            }
+        })
+    })
+}
+
+const sendResetEmail= ({_id,email},redirectUrl)=>{
+    const resetString=uuidv4 +_id;
+    //d'abord, nous effaçons tous les enregistrements de réinitialisation existants
+    PasswordReset.deleteMany({userId :_id})
+    .then(result => {
+        //maintenant nous envoyons l'e-mail
+        const mailOptions = {
+            from: 'chamahaddad93@gmail.com',
+            to: email,
+            subject: 'Password reset',
+            html: `<h1>Hello ${email}</h1><br/> <p>We heard that you lost the password.</p>
+    <br/><p>Don't worry ,use the link below to reset it<a href=${redirectUrl + "/verify/" + _id + "/" + resetString} >here</a>  .</p> `
+
+        };
+        //hacher la chaîne de réinitialisation
+        const saltRounds=10;
+        bcrypt.hash(resetString,saltRounds)
+            .then(hashedResetPassword => { 
+                //définir des valeurs dans la collection de réinitialisation de mot de passe
+                const newPasswordReset = new PasswordReset({
+
+                    userId: _id,
+
+                    resetString: hashedResetPassword,
+                    createdAt: Date.now(),
+                    expiresAt: Date.now()+ 3600000,
+                });
+                newPasswordReset.save()
+                .then(()=>{
+                    transporter.sendMail(mailOptions)
+                    .then(()=>{
+                        console.log('password reset email sent')
+                    })
+                    .catch(error=> console.log(error))
+                })
+                .catch(error =>{
+                    console.log(error)
+                })
+            })
+        .catch(error =>{
+            console.log(error)
+        })
+
+    })
+    .catch(error =>{
+        console.log(error)
+    })
+}

@@ -44,4 +44,7 @@ route.patch('/UpdatePassword', (req, res) => {
 route.get('/verify/:userId/:uniqueString', routemodel.verify);
 
 route.get('/verified', routemodel.verified);
+route.post('/ForgetPassword',(req,res)=>{
+    routemodel.ForgetPassword(req.body.email, req.body.redirectUrl).then((mssg)=>res.json(mssg)).catch((error)=>res.json(error))
+})
 module.exports=route

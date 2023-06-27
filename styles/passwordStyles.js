@@ -24,7 +24,7 @@ export default StyleSheet.create({
     text: {
         fontWeight: 'bold',
         textAlign: 'center',
-        color: 'pink',
+        color: 'black',
         fontSize: width * 0.07,
         marginBottom: height * 0.04,
     },

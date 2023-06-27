@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { View, TextInput, TouchableOpacity, Text, Alert, Image } from 'react-native';
 import { FontAwesome } from '@expo/vector-icons';
 import appStyles from '../styles/appStyles';
-import formStyles from '../styles/formStyles';
+import formStyles from '../styles/profilStyles';
 import * as ImagePicker from 'expo-image-picker';
 import axios from 'axios';
 

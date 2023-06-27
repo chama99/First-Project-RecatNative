@@ -36,10 +36,10 @@ route.post('/login', (req, res) => {
         .catch((err) => res.status(400).json({ err: err }))
 })
 route.patch('/UpdateUser', (req, res) => {
-    routemodel.updateUser(req.body.id, req.body.nom, req.body.prenom, req.body.email,req.body.image).then((mssg) => res.json(mssg)).catch((err) => res.status(400).json(err))
+    routemodel.updateUser(req.body.id, req.body.nom, req.body.prenom, req.body.image).then((mssg) => res.json(mssg)).catch((err) => res.status(400).json(err))
 })
 route.patch('/UpdatePassword', (req, res) => {
-    routemodel.updateUser(req.body.id,req.body.password).then((mssg) => res.json(mssg)).catch((err) => res.status(400).json(err))
+    routemodel.updatePassword(req.body.id,req.body.password).then((mssg) => res.json({mssg:mssg})).catch((err) => res.status(400).json(err))
 })
 route.get('/verify/:userId/:uniqueString', routemodel.verify);
 

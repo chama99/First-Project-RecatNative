@@ -8,6 +8,7 @@ import Home from './Components/Home.js';
 import Profil from './Components/profil.js';
 import 'react-native-gesture-handler';
 import { createDrawerNavigator } from '@react-navigation/drawer';
+import Password from './Components/changepasword.js';
 
 const Drawer = createDrawerNavigator();
 const Stack = createNativeStackNavigator();
@@ -21,6 +22,7 @@ function App() {
       <Stack.Screen name="Home" component={Home} options={{ headerShown: false }} /> 
       <Stack.Screen name="Deconnexion" component={Deconnexion} options={{ headerShown: false }} />
       <Stack.Screen name="Profil" component={Profil}  />
+      <Stack.Screen name="Password" component={Password} options={{ headerTitle: '', }} />
 
       
     </Stack.Navigator>

@@ -225,24 +225,33 @@ exports.login=(email,password)=>{
                 const mssg = "Mot de passe ou email invalide"
                 resolve(mssg)
             }else{
-                bcrypt.compare(password,user.password).then((same)=>{
-                    if(same){
-                    //ykhazynly data mou3ayna ,token nestha9ouh cote sécurite bch net2kdou mn user msajill aandy 
-                    let token=jwt.sign({id:user._id},privatekey,{
-                        expiresIn:'5h'
-                    })
-                    mongoose.disconnect()
-                    resolve({token,user})
+                if (!user.verified) {
+                    const mssg = "L'e-mail n'a pas été vérifié."
+                    resolve(mssg)
+                }else{
+                    bcrypt.compare(password, user.password).then((same) => {
+                        if (same) {
+                            //ykhazynly data mou3ayna ,token nestha9ouh cote sécurite bch net2kdou mn user msajill aandy 
+                            let token = jwt.sign({ id: user._id }, privatekey, {
+                                expiresIn: '5h'
+                            })
+                            mongoose.disconnect()
+                            resolve({ token, user })
 
-                    }
-                    else{
+                        }
+                        else {
+                            mongoose.disconnect()
+                            const mssg = "Mot de passe ou email invalide"
+                            resolve(mssg)
+                        }
+                    }).catch((err) => {
                         mongoose.disconnect()
-                        const mssg = "Mot de passe ou email invalide"
-                        resolve(mssg)
-                    }
-                }).catch((err)=>{
-                    mongoose.disconnect()
-                    reject(err)})
+                        reject(err)
+                    })
+                }
+                    
+                
+                
             }
         })
     })
@@ -277,10 +286,10 @@ exports.getUsersById = (id) => {
     })
 }
 
-exports.updateUser = (id,nom,prenom,email,image) => {
+exports.updateUser = (id,nom,prenom,image) => {
     return new Promise((resolve, reject) => {
         mongoose.connect(url).then(() => {
-            return User.updateOne({ _id: id }, {nom:nom,prenom:prenom,email:email,image:image})
+            return User.updateOne({ _id: id }, {nom:nom,prenom:prenom,image:image})
         }).then((doc) => {
             mongoose.disconnect()
             resolve(doc)
@@ -291,17 +300,29 @@ exports.updateUser = (id,nom,prenom,email,image) => {
 
     })
 }
-exports.updatePassword = (password) => {
+exports.updatePassword = (id, password) => {
     return new Promise((resolve, reject) => {
-        mongoose.connect(url).then(() => {
-            return User.updateOne({_id:id},{password:password})
-        }).then((doc) => {
-            mongoose.disconnect()
-            resolve(doc)
-        }).catch((err) => {
-            mongoose.disconnect()
-            reject(err)
-        })
+        mongoose
+            .connect(url)
+            .then(() => {
+                return bcrypt.hash(password, 10);
+            })
+            .then((hashPassword) => {
+                return User.updateOne({ _id: id }, { password: hashPassword });
+            })
+            .then((doc) => {
+                mongoose.disconnect();
+                resolve("Mot de passe est changé ");
+            })
+            .catch((err) => {
+                mongoose.disconnect();
+                reject(err);
+            });
+    });
+};
 
-    })
-}
+
+
+
+
+

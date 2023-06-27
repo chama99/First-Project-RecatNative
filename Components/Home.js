@@ -82,7 +82,7 @@ const Home = ({ route, navigation }) => {
                         <FontAwesome name="edit" style={homeStyles.editIcon} />
                         <Text style={homeStyles.editText}>Modifier le profil</Text>
                     </TouchableOpacity>
-                    <TouchableOpacity style={homeStyles.editButton} onPress={() => console.log(ImageSource)}>
+                    <TouchableOpacity style={homeStyles.editButton} onPress={goToPassword}>
                         <FontAwesome name="edit" style={homeStyles.editIcon} />
                         <Text style={homeStyles.editText}>Changer le mot de passe</Text>
                     </TouchableOpacity>
@@ -147,7 +147,9 @@ const Home = ({ route, navigation }) => {
     const goToProfil = () => {
         navigation.navigate('Profil', { user: user,updateUserProfile: updateUserProfile });
     };
-
+    const goToPassword = () => {
+        navigation.navigate('Password', { user: user });
+    };
     return (
         <View style={homeStyles.container}>
             <BottomNavigation

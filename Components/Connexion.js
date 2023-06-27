@@ -38,8 +38,9 @@ const Connexion = ({ navigation }) => {
             const response = await login();
             console.log(response)
 
-            if (response.mssg === "Mot de passe ou email invalide") {
+            if (response.mssg === "Mot de passe ou email invalide" || response.mssg === "L'e-mail n'a pas été vérifié.") {
                 Alert.alert('Erreur', response.mssg);
+               
             } else {
                 // Stocker le jeton d'accès localement avec AsyncStorage
                 await AsyncStorage.setItem('accessToken', response.token);

@@ -64,8 +64,8 @@ export default StyleSheet.create({
     },
     iconContainer: {
         position: 'absolute',
-        marginTop: height * 0.23,
-        left: '95%',
+        marginTop: height * 0.12,
+        left: '65%',
         transform: [
             { translateX: -20 }, // Adjust the value to center the icon horizontally
             { translateY: -20 }, // Adjust the value to center the icon vertically

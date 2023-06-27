@@ -2,7 +2,7 @@ const route=require('express').Router()
 const routemodel=require('../models/user.model')
 const jwt=require('jsonwebtoken')
  
-const privatekey = "this key hdhfkflflfl"
+/*const privatekey = "this key hdhfkflflfl"
 verifytoken=(req,res,next)=>{
     let token=req.headers.authorization
     if(!token){
@@ -14,8 +14,8 @@ verifytoken=(req,res,next)=>{
     }catch(e){
         res.status(400).json({ msg: e })
     }
-}
-route.get('/users',verifytoken,(req, res) => {
+}*/
+route.get('/users',(req, res) => {
     let token = req.headers.authorization
     let user=jwt.decode(token,{complete:true})
     routemodel.getUsers().then((mssg) => res.json({users:mssg,user:user})).catch((err) => res.status(400).json(err))
@@ -38,5 +38,10 @@ route.post('/login', (req, res) => {
 route.patch('/UpdateUser', (req, res) => {
     routemodel.updateUser(req.body.id, req.body.nom, req.body.prenom, req.body.email,req.body.image).then((mssg) => res.json(mssg)).catch((err) => res.status(400).json(err))
 })
+route.patch('/UpdatePassword', (req, res) => {
+    routemodel.updateUser(req.body.id,req.body.password).then((mssg) => res.json(mssg)).catch((err) => res.status(400).json(err))
+})
+route.get('/verify/:userId/:uniqueString', routemodel.verify);
 
+route.get('/verified', routemodel.verified);
 module.exports=route

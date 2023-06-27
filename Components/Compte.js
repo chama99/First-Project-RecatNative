@@ -12,7 +12,7 @@ export async function registerUser(nom,prenom,email, password,image) {
             image = { uri: "require('../assets/prof.png')" };
         }
         
-        const response = await axios.post('http://192.168.1.16:6000/register', { nom, prenom, email, password, image: image });
+        const response = await axios.post('http://192.168.1.16:80/register', { nom, prenom, email, password, image: image });
         return Promise.resolve(response.data.mssg); // Renvoyer la réponse du serveur
     } catch (error) {
         return Promise.reject({ error });
@@ -119,7 +119,7 @@ function Compte() {
             if (response === "Cet email existe déja"){
                 Alert.alert('Erreur',response)
             }else{
-                Alert.alert('Succès', 'Compte créé avec succès.')
+                Alert.alert('Succès', "Veuillez vérifier votre compte à l'adresse e - mail.")
                 setName('');
                 setPrenom('');
                 setEmail('');

@@ -11,7 +11,7 @@ export async function ModifierUser(id,nom,prenom,email,image) {
     try {
        
 
-        const response = await axios.patch('http://192.168.1.16:6000/UpdateUser', {id, nom, prenom, email,  image });
+        const response = await axios.patch('http://192.168.1.16:80/UpdateUser', {id, nom, prenom, email,  image });
         return Promise.resolve(response.data); // Renvoyer la réponse du serveur
     } catch (error) {
         return Promise.reject({ error });
@@ -143,7 +143,7 @@ function Profil({ route, navigation }) {
             />
            
             <TouchableOpacity style={formStyles.button} onPress={handleCreateAccount}>
-                <Text style={formStyles.buttonText}>Modifier</Text>
+                <Text style={formStyles.buttonText}>Enregistrer</Text>
             </TouchableOpacity>
         </View>
     );

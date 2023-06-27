@@ -75,4 +75,25 @@ export default StyleSheet.create({
         fontSize: 20,
         color: 'pink',
     },
+    passwordIconContainer: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        height: height * 0.06,
+        width: width * 0.6, // Utilisation de 60% de la largeur de l'écran comme largeur de l'input
+        borderColor: 'pink',
+        borderWidth: 2,
+
+        borderRadius: 8,
+        paddingHorizontal: width * 0.01,
+        marginTop: height * 0.01,
+    },
+    passwordInput: {
+        flex: 1,
+        height: 40,
+    },
+    passwordIcon: {
+        marginLeft: 10,
+    },
+
+
 });

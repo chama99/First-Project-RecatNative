@@ -28,4 +28,4 @@ app.post('/upload', upload.single('image'), (req, res) => {
     }
 });
 app.use(cors());
-app.listen(6000)
+app.listen(80)

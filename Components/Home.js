@@ -9,7 +9,7 @@ import axios from 'axios';
 
 const fetchUser = async (id) => {
     try {
-        const response = await axios.get(`http://192.168.1.16:6000/getById/${id}`);
+        const response = await axios.get(`http://192.168.1.16:80/getById/${id}`);
         console.log(response.data);
         return response.data.user;
     } catch (error) {

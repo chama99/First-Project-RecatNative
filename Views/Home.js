@@ -6,10 +6,11 @@ import homeStyles from '../styles/homeStyle';
 import { TouchableOpacity } from 'react-native';
 import { FontAwesome } from '@expo/vector-icons';
 import axios from 'axios';
+import Accueil from '../Components/Accueil';
 
 const fetchUser = async (id) => {
     try {
-        const response = await axios.get(`http://192.168.1.16:80/getById/${id}`);
+        const response = await axios.get(`http://192.168.30.152:80/getById/${id}`);
         console.log(response.data);
         return response.data.user;
     } catch (error) {
@@ -66,9 +67,8 @@ const Home = ({ route, navigation }) => {
 
     const renderScene = BottomNavigation.SceneMap({
         home: () => (
-            <View style={homeStyles.contentContainer}>
-                <Text>Contenu de la page d'accueil</Text>
-            </View>
+            <Accueil user={user} />
+
         ),
         profile: () => (
             <View style={homeStyles.container}>
@@ -124,7 +124,7 @@ const Home = ({ route, navigation }) => {
         );
     };
 
-    const renderIcon = ({ route, color, focused }) => {
+    const renderIcon = ({ route,color, focused }) => {
         let iconName;
 
         switch (route.key) {
@@ -140,8 +140,8 @@ const Home = ({ route, navigation }) => {
             default:
                 iconName = 'home';
         }
-
-        return <Icon name={iconName} size={24} color={color} />;
+        const iconColor = focused ? '#D8BFD8' : color; // Définir la couleur de l'icône en fonction de son état
+        return <Icon name={iconName} size={24} color={iconColor} />;
     };
 
     const goToProfil = () => {
@@ -153,7 +153,7 @@ const Home = ({ route, navigation }) => {
     return (
         <View style={homeStyles.container}>
             <BottomNavigation
-                navigationState={{ index, routes }}
+                navigationState={{ index, routes }} 
                 onIndexChange={handleIndexChange}
                 renderScene={renderScene}
                 renderIcon={renderIcon}

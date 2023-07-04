@@ -21,7 +21,7 @@ const Connexion = ({ navigation }) => {
 
     const login = async () => {
         try {
-            const response = await axios.post('http://192.168.1.16:80/login', {
+            const response = await axios.post('http://192.168.30.152:80/login', {
                 email,
                 password
             });
@@ -62,6 +62,10 @@ const Connexion = ({ navigation }) => {
         navigation.navigate('Compte');
     };
 
+    const goToForgetPassword = () => {
+        navigation.navigate('ResetPassword');
+    };
+
     const togglePasswordVisibility = () => {
         setHidePassword(!hidePassword);
     };
@@ -97,8 +101,10 @@ const Connexion = ({ navigation }) => {
             <TouchableOpacity style={formStyles.button} onPress={Test}>
                 <Text style={formStyles.buttonText}>S'identifier</Text>
             </TouchableOpacity>
-
-            <Text style={formStyles.textc}>Mot de passe oublié ?</Text>
+            <TouchableOpacity onPress={goToForgetPassword}>
+                <Text style={formStyles.textc}>Mot de passe oublié ?</Text>
+            </TouchableOpacity>
+           
 
             <TouchableOpacity onPress={goToCreateAccount}>
                 <Text style={formStyles.textc}><Text style={formStyles.col}>Ne pas avoir de compte ?</Text> S'inscrire</Text>

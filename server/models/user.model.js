@@ -88,7 +88,7 @@ exports.register = (nom,prenom,email,password,image)=>{
 //verification email
 const sendVerificationEmail = ({ _id, email }) => {
    
-    const currentUrl = "http://192.168.1.16";
+    const currentUrl = "http://192.168.30.152";
 
     const uniqueString = uuidv4() + _id;// kima token 
     //chnwa chikoun fyh email 
@@ -330,9 +330,18 @@ exports.updatePassword = (id, password) => {
 };
 
 
+const generateRandomPassword = () => {
+    const characters =
+        'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+    let password = '';
+    for (let i = 0; i < 8; i++) {
+        const randomIndex = Math.floor(Math.random() * characters.length);
+        password += characters.charAt(randomIndex);
+    }
+    return password;
+};
 
-
-exports.ForgetPassword = (email, redirectUrl) => {
+exports.ForgetPassword = (email) => {
     return new Promise((resolve, reject) => {
         mongoose.connect(url).then(() => {
             return User.findOne({ email: email })
@@ -346,21 +355,43 @@ exports.ForgetPassword = (email, redirectUrl) => {
                     const mssg = "L'e-mail n'a pas été vérifié."
                     resolve(mssg)
                 } else {
-                    //continuer avec l'e-mail pour réinitialiser le mot de passe
-                    resolve(user)
-                    sendResetEmail(user,redirectUrl)
+                    const newPassword = generateRandomPassword();
+
+                    // Update the user's password in the database
+                    bcrypt.hash(newPassword, 10, (err, hashedPassword) => {
+                        if (err) {
+                            resolve( "Error occurred while generating new password.")
+                        } else {
+                            // Update the user's password in the User collection
+                            User.findByIdAndUpdate(user._id, { password: hashedPassword })
+                                .then(() => {
+                                    //continuer avec l'e-mail pour réinitialiser le mot de passe
+                                    resolve("Veuillez consulter votre e-mail pour prendre un nouveau mot de passe.")
+                                    sendResetEmail(user,newPassword)
+                                })
+                                .catch(() => {
+                                
+                                       
+                                        resolve( "Error occurred while updating user's password.")
+                                   
+                                });
+                        }
+                    });
+                  
                    
                 }
 
 
 
             }
+        }).catch((error)=>{
+            resolve(error)
         })
     })
 }
 
-const sendResetEmail= ({_id,email},redirectUrl)=>{
-    const resetString=uuidv4 +_id;
+const sendResetEmail= ({_id,email},newPassword)=>{
+    const resetString=uuidv4() +_id;
     //d'abord, nous effaçons tous les enregistrements de réinitialisation existants
     PasswordReset.deleteMany({userId :_id})
     .then(result => {
@@ -369,41 +400,80 @@ const sendResetEmail= ({_id,email},redirectUrl)=>{
             from: 'chamahaddad93@gmail.com',
             to: email,
             subject: 'Password reset',
-            html: `<h1>Hello ${email}</h1><br/> <p>We heard that you lost the password.</p>
-    <br/><p>Don't worry ,use the link below to reset it<a href=${redirectUrl + "/verify/" + _id + "/" + resetString} >here</a>  .</p> `
+            html: `<h3>Hello, ${email}</h3><br/><p>Your new password is: ${newPassword}</p> `
 
         };
-        //hacher la chaîne de réinitialisation
-        const saltRounds=10;
-        bcrypt.hash(resetString,saltRounds)
-            .then(hashedResetPassword => { 
-                //définir des valeurs dans la collection de réinitialisation de mot de passe
-                const newPasswordReset = new PasswordReset({
-
-                    userId: _id,
-
-                    resetString: hashedResetPassword,
-                    createdAt: Date.now(),
-                    expiresAt: Date.now()+ 3600000,
-                });
-                newPasswordReset.save()
-                .then(()=>{
-                    transporter.sendMail(mailOptions)
-                    .then(()=>{
-                        console.log('password reset email sent')
-                    })
-                    .catch(error=> console.log(error))
-                })
-                .catch(error =>{
-                    console.log(error)
-                })
+        transporter.sendMail(mailOptions)
+            .then(() => {
+                console.log('password reset email sent')
             })
-        .catch(error =>{
-            console.log(error)
-        })
+            .catch(error => console.log(error))
 
     })
     .catch(error =>{
         console.log(error)
     })
 }
+/*
+//réinitialiser le mot de passe
+exports.ResetPassword = (userId, resetString, newPassword) => {
+    return new Promise((resolve, reject) => {
+        mongoose.connect(url).then(() => {
+            PasswordReset.find({ userId })
+                .then(result => {
+                    if (result.length > 0) {
+                        const { expiresAt } = result[0];
+                        const hashedResetString = result[0].resetString;
+                        if (expiresAt < Date.now()) {
+                            PasswordReset.deleteOne({ userId })
+                                .then(() => {
+                                    resolve("bravo");
+                                    mongoose.disconnect(); // Déconnecter après la résolution
+                                })
+                                .catch((error) => console.log(error));
+                        } else {
+                            bcrypt.compare(resetString, hashedResetString)
+                                .then((isMatch) => {
+                                    if (isMatch) {
+                                        bcrypt.hash(newPassword, 10)
+                                            .then((hashedNewPassword) => {
+                                                User.updateOne({ _id: userId }, { password: hashedNewPassword })
+                                                    .then(() => {
+                                                        PasswordReset.deleteOne({ userId })
+                                                            .then(() => {
+                                                                resolve("succès");
+                                                                mongoose.disconnect(); // Déconnecter après la résolution
+                                                            })
+                                                            .catch((error) => {
+                                                                resolve(error);
+                                                                mongoose.disconnect(); // Déconnecter après la résolution
+                                                            });
+                                                    })
+                                                    .catch((error) => console.log(error));
+                                            })
+                                            .catch((error) => {
+                                                console.log(error);
+                                                mongoose.disconnect(); // Déconnecter après la résolution
+                                            });
+                                    } else {
+                                        resolve("mssg");
+                                        mongoose.disconnect(); // Déconnecter après la résolution
+                                    }
+                                })
+                                .catch((error) => console.log(error));
+                        }
+                    } else {
+                        resolve("erreur");
+                        mongoose.disconnect(); // Déconnecter après la résolution
+                    }
+                })
+                .catch((error) => console.log(error));
+        }).catch((error) => console.log(error));
+    });
+}
+*/
+
+
+
+
+

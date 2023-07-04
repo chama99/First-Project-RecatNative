@@ -1,15 +1,15 @@
 import React, { useState } from 'react';
 import { View, TextInput, TouchableOpacity, Text, Alert } from 'react-native';
-import { FontAwesome } from '@expo/vector-icons';
+
 import bcrypt from 'bcryptjs';
-import appStyles from '../styles/appStyles';
+
 import formStyles from '../styles/passwordStyles';
 
 import axios from 'axios';
 
 export async function ModifierPassword(id, password) {
     try {
-        const response = await axios.patch('http://192.168.1.16:80/UpdatePassword', { id,password});
+        const response = await axios.patch('http://192.168.30.152:80/UpdatePassword', { id,password});
         return Promise.resolve(response.data); // Renvoyer la réponse du serveur
     } catch (error) {
         return Promise.reject({ error });

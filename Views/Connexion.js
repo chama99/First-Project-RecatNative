@@ -71,9 +71,8 @@ const Connexion = ({ navigation }) => {
     };
 
     return (
-        <SafeAreaView style={appStyles.container}>
-            <Text style={formStyles.text}>Connexion</Text>
-
+        <View style={appStyles.container}>
+            <Image source={require('../assets/whitecape1.png')} style={formStyles.image} />
             <TextInput
                 style={formStyles.input}
                 placeholder="Email"
@@ -99,7 +98,7 @@ const Connexion = ({ navigation }) => {
           
 
             <TouchableOpacity style={formStyles.button} onPress={Test}>
-                <Text style={formStyles.buttonText}>S'identifier</Text>
+                <Text style={formStyles.buttonText}>Connexion</Text>
             </TouchableOpacity>
             <TouchableOpacity onPress={goToForgetPassword}>
                 <Text style={formStyles.textc}>Mot de passe oublié ?</Text>
@@ -107,12 +106,11 @@ const Connexion = ({ navigation }) => {
            
 
             <TouchableOpacity onPress={goToCreateAccount}>
-                <Text style={formStyles.textc}><Text style={formStyles.col}>Ne pas avoir de compte ?</Text> S'inscrire</Text>
+                <Text> <Text style={formStyles.col}>Ne pas avoir de compte ?</Text><Text style={formStyles.textc}> S'inscrire</Text></Text> 
             </TouchableOpacity>
 
-            <Image source={require('../assets/profil.png')} style={formStyles.image} />
-
-        </SafeAreaView>
+           
+        </View>
     );
 };
 

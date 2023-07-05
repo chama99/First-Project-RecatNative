@@ -1,88 +1,92 @@
-// formStyles.js
-
 import { StyleSheet } from 'react-native';
 import { Dimensions } from 'react-native';
 
 const { height, width } = Dimensions.get('window');
 
 export default StyleSheet.create({
-    col:{
-        color:'black'
+    // Autres styles...
+
+    col: {
+        color: 'black'
     },
     text: {
         fontWeight: 'bold',
-        marginVertical: height * 0.01, // Utilisation de 1% de la hauteur de l'écran comme marge verticale
-        fontSize: width * 0.08, // Utilisation de 5% de la largeur de l'écran comme taille de police
+        marginVertical: height * 0.01,
+        fontSize: width * 0.08,
         textAlign: 'center',
-        color:'rgb(147,112,300)'
+        color: 'black'
     },
-    textc:{
-        marginVertical: height * 0.01, // Utilisation de 1% de la hauteur de l'écran comme marge verticale
-         // Utilisation de 5% de la largeur de l'écran comme taille de police
+    textc: {
+        marginVertical: height * 0.01,
         textAlign: 'center',
-        color: 'rgb(147,112,300)'
+        color: 'black',
+        fontWeight: 'bold',
     },
     input: {
         height: height * 0.06,
-        width: width * 0.6, // Utilisation de 60% de la largeur de l'écran comme largeur de l'input
-        borderColor: 'pink',
+      //  width: width * 0.6,
         borderWidth: 2,
-       
         borderRadius: 8,
         paddingHorizontal: width * 0.01,
         marginTop: height * 0.01,
+        borderColor: '#D8BFD8', // Couleur de bordure par défaut
     },
-   
+
+    inputError: {
+        borderColor: 'red', // Couleur de bordure pour les champs de saisie en erreur
+    },
+
+
     button: {
-        backgroundColor: 'pink',
-        paddingVertical: height * 0.01, // Utilisation de 2% de la hauteur de l'écran comme padding vertical
-        paddingHorizontal: width * 0.03, // Utilisation de 5% de la largeur de l'écran comme padding horizontal
+        backgroundColor: '#D8BFD8',
+        paddingVertical: height * 0.01,
+        paddingHorizontal: width * 0.03,
         borderRadius: 8,
-        width: width* 0.3,
-        alignSelf: 'center', // Aligner le bouton au centre horizontalement
+        width: width * 0.3,
+        alignSelf: 'center',
         marginTop: height * 0.02,
     },
     buttonText: {
         color: 'white',
-        fontSize: width * 0.04, // Utilisation de 4% de la largeur de l'écran comme taille de police
+        fontSize: width * 0.04,
         fontWeight: 'bold',
         textAlign: 'center',
     },
     image: {
         resizeMode: 'cover',
-        height: height * 0.3, // Utilisation de 30% de la hauteur de l'écran comme hauteur de l'image
-        width: width * 0.9, // Utilisation de 90% de la largeur de l'écran comme largeur de l'image
+        height: 75,
+        width: 150,
         alignSelf: 'center',
+        marginTop:20
     },
     imgp: {
-        height: height * 0.15, // Utilisation de 15% de la hauteur de l'écran comme hauteur de l'image
-        width: width * 0.3, // Utilisation de 30% de la largeur de l'écran comme largeur de l'image
+        height: height * 0.15,
+        width: width * 0.3,
         alignSelf: 'center',
-        borderRadius: (height * 0.15) / 2, // Utilisation de la moitié de la hauteur pour obtenir un effet de cercle
-        borderWidth: 2, // Largeur de la bordure
-        borderColor: '#fff', // Couleur de la bordure
+        borderRadius: (height * 0.15) / 2,
+        borderWidth: 2,
+        borderColor: '#fff',
     },
     iconContainer: {
         position: 'absolute',
         marginTop: height * 0.23,
         left: '95%',
         transform: [
-            { translateX: -20 }, // Adjust the value to center the icon horizontally
-            { translateY: -20 }, // Adjust the value to center the icon vertically
+            { translateX: -20 },
+            { translateY: -20 },
         ],
     },
     icon: {
         fontSize: 20,
-        color: 'pink',
+        color: '#D8BFD8',
     },
     passwordIconContainer: {
         flexDirection: 'row',
         alignItems: 'center',
         height: height * 0.06,
-        width: width * 0.6, // Utilisation de 60% de la largeur de l'écran comme largeur de l'input
-        borderColor: 'pink',
+        width: width * 0.6,
+        borderColor: '#D8BFD8',
         borderWidth: 2,
-
         borderRadius: 8,
         paddingHorizontal: width * 0.01,
         marginTop: height * 0.01,
@@ -95,5 +99,9 @@ export default StyleSheet.create({
         marginLeft: 10,
     },
 
-
+    errorText: {
+        color: 'red',
+        fontSize: 12,
+        marginTop: 5,
+    },
 });

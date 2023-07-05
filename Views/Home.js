@@ -6,7 +6,7 @@ import homeStyles from '../styles/homeStyle';
 import { TouchableOpacity } from 'react-native';
 import { FontAwesome } from '@expo/vector-icons';
 import axios from 'axios';
-import Accueil from '../Components/Accueil';
+import Accueil from './Accueil';
 
 const fetchUser = async (id) => {
     try {

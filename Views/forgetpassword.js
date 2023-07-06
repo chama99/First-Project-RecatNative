@@ -17,7 +17,7 @@ const ResetPassword = ({ navigation }) => {
 
     const forgetPassword = async () => {
         try {
-            const response = await axios.post('http://192.168.30.152:80/ForgetPassword', {
+            const response = await axios.post('http://192.168.3.121:80/ForgetPassword', {
                 email,
 
             });
@@ -52,12 +52,12 @@ const ResetPassword = ({ navigation }) => {
    
 
     return (
-        <SafeAreaView style={appStyles.container}>
+        <View style={appStyles.container}>
             <Text style={formStyles.text}>Trouvez votre compte</Text>
             <Text>Veuillez entrer votre adresse e-mail pour rechercher votre compte :</Text>
             <TextInput
                 style={formStyles.input}
-                placeholder="Email"
+                placeholder="Adresse e-mail"
                 keyboardType="email-address"
                 value={email}
                 onChangeText={handleEmailChange}
@@ -68,7 +68,7 @@ const ResetPassword = ({ navigation }) => {
             </TouchableOpacity>
            
 
-        </SafeAreaView>
+        </View>
     );
 };
 

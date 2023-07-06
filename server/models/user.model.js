@@ -88,7 +88,7 @@ exports.register = (nom,prenom,email,password,image)=>{
 //verification email
 const sendVerificationEmail = ({ _id, email }) => {
    
-    const currentUrl = "http://192.168.30.152";
+    const currentUrl = "http://192.168.3.121";
 
     const uniqueString = uuidv4() + _id;// kima token 
     //chnwa chikoun fyh email 

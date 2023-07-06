@@ -5,31 +5,42 @@ const { height, width } = Dimensions.get('window');
 
 export default StyleSheet.create({
     // Autres styles...
+    container:{
+        borderWidth:3,
+        borderColor: '#FCE7FF',
+        borderRadius: 20,
+        backgroundColor: 'white',
+        paddingLeft:20,
+        paddingRight: 20,
+       
+        
 
+    },
     col: {
         color: 'black'
     },
     text: {
         fontWeight: 'bold',
-        marginVertical: height * 0.01,
-        fontSize: width * 0.08,
+        marginVertical: 10,
+        fontSize:25,
         textAlign: 'center',
         color: 'black'
     },
     textc: {
-        marginVertical: height * 0.01,
+        marginVertical: 10,
         textAlign: 'center',
         color: 'black',
         fontWeight: 'bold',
     },
     input: {
-        height: height * 0.06,
-      //  width: width * 0.6,
+        height: 45,
+        
         borderWidth: 2,
         borderRadius: 8,
-        paddingHorizontal: width * 0.01,
-        marginTop: height * 0.01,
-        borderColor: '#D8BFD8', // Couleur de bordure par défaut
+        paddingHorizontal: 10,
+        marginTop: 10,
+        marginBottom: 20,
+        borderColor: 'rgb(143, 71, 155)', // Couleur de bordure par défaut
     },
 
     inputError: {
@@ -38,19 +49,20 @@ export default StyleSheet.create({
 
 
     button: {
-        backgroundColor: '#D8BFD8',
-        paddingVertical: height * 0.01,
-        paddingHorizontal: width * 0.03,
+        height: 40,
+
+       
         borderRadius: 8,
-        width: width * 0.3,
-        alignSelf: 'center',
-        marginTop: height * 0.02,
+       
+        marginTop: 10,
+       backgroundColor: 'rgb(143, 71, 155)', // Couleur de bordure par défaut
     },
     buttonText: {
         color: 'white',
-        fontSize: width * 0.04,
+        fontSize: 15,
         fontWeight: 'bold',
         textAlign: 'center',
+        marginTop:10
     },
     image: {
         resizeMode: 'cover',
@@ -60,36 +72,48 @@ export default StyleSheet.create({
         marginTop:20
     },
     imgp: {
-        height: height * 0.15,
-        width: width * 0.3,
+        height: 120,
+        width: 120,
         alignSelf: 'center',
-        borderRadius: (height * 0.15) / 2,
+        borderRadius: 8,
         borderWidth: 2,
         borderColor: '#fff',
+        
+      
     },
     iconContainer: {
         position: 'absolute',
-        marginTop: height * 0.23,
-        left: '95%',
-        transform: [
-            { translateX: -20 },
-            { translateY: -20 },
-        ],
+        
+
+      
     },
     icon: {
         fontSize: 20,
-        color: '#D8BFD8',
+        color: 'rgb(143, 71, 155)',
+        paddingTop: 80,
+       paddingLeft: 60
+       
+
+    },
+    icon2: {
+        fontSize: 20,
+        color: 'rgb(143, 71, 155)',
+        paddingTop: 20,
+        paddingLeft: 0
+
+
     },
     passwordIconContainer: {
         flexDirection: 'row',
         alignItems: 'center',
-        height: height * 0.06,
-        width: width * 0.6,
-        borderColor: '#D8BFD8',
+        height: 45,
+
         borderWidth: 2,
         borderRadius: 8,
-        paddingHorizontal: width * 0.01,
-        marginTop: height * 0.01,
+        paddingHorizontal: 10,
+        marginTop: 10,
+        marginBottom: 20,
+        borderColor: 'rgb(143, 71, 155)',
     },
     passwordInput: {
         flex: 1,
@@ -104,4 +128,6 @@ export default StyleSheet.create({
         fontSize: 12,
         marginTop: 5,
     },
+    
+
 });

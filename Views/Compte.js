@@ -7,6 +7,7 @@ import appStyles from '../styles/appStyles';
 import formStyles from '../styles/formStyles';
 import * as ImagePicker from 'expo-image-picker';
 import axios from 'axios';
+import { ScrollView } from 'react-native-gesture-handler';
 
 export async function registerUser(nom, prenom, email, password, image) {
     try {
@@ -14,7 +15,7 @@ export async function registerUser(nom, prenom, email, password, image) {
             image = { uri: "require('../assets/prof.png')" };
         }
 
-        const response = await axios.post('http://192.168.30.152:80/register', { nom, prenom, email, password, image: image });
+        const response = await axios.post('http://192.168.3.121:80/register', { nom, prenom, email, password, image: image });
         return Promise.resolve(response.data.mssg); // Renvoyer la réponse du serveur
     } catch (error) {
         return Promise.reject({ error });
@@ -75,89 +76,95 @@ function Compte() {
 
     return (
         <View style={appStyles.container}>
-            <Image source={image} style={formStyles.imgp} />
-            <TouchableOpacity onPress={handleImagePicker} style={formStyles.iconContainer}>
-                <FontAwesome name="image" style={formStyles.icon} />
-            </TouchableOpacity>
+           <ScrollView style={formStyles.container}>
+                <View style={{ flexDirection: 'row', alignSelf: 'center', }}>
+                    <Image source={image} style={formStyles.imgp} />
+                    <TouchableOpacity onPress={handleImagePicker} style={formStyles.iconContainer}>
+                        <FontAwesome name="image" style={formStyles.icon} />
+                    </TouchableOpacity>
+                </View>
+                
 
+                {formik.touched.name && formik.errors.name ? (
+                    <Text style={formStyles.errorText}>{formik.errors.name}</Text>
+                ) : null}
+                <TextInput
+                    style={[
+                        formStyles.input,
+                        formik.touched.name && formik.errors.name && formStyles.inputError,
+                    ]}
+                    placeholder="Nom"
+                    value={formik.values.name}
+                    onChangeText={formik.handleChange('name')}
+                    onBlur={formik.handleBlur('name')}
+                />
+
+               
+                {formik.touched.prenom && formik.errors.prenom ? (
+                    <Text style={formStyles.errorText}>{formik.errors.prenom}</Text>
+                ) : null}
+                <TextInput
+                    style={[
+                        formStyles.input,
+                        formik.touched.prenom && formik.errors.prenom && formStyles.inputError,
+                    ]}
+                    placeholder="Prénom"
+                    value={formik.values.prenom}
+                    onChangeText={formik.handleChange('prenom')}
+                    onBlur={formik.handleBlur('prenom')}
+                />
+               
+                {formik.touched.email && formik.errors.email ? (
+                    <Text style={formStyles.errorText}>{formik.errors.email}</Text>
+                ) : null}
+                <TextInput
+                    style={[
+                        formStyles.input,
+                        formik.touched.email && formik.errors.email && formStyles.inputError,
+                    ]}
+                    placeholder="Adresse e-mail"
+                    value={formik.values.email}
+                    onChangeText={formik.handleChange('email')}
+                    onBlur={formik.handleBlur('email')}
+                    keyboardType="email-address"
+                />
+                
+                {formik.touched.password && formik.errors.password ? (
+                    <Text style={formStyles.errorText}>{formik.errors.password}</Text>
+                ) : null}
+                <TextInput
+                    style={[
+                        formStyles.input,
+                        formik.touched.password && formik.errors.password && formStyles.inputError,
+                    ]}
+                    placeholder="Mot de passe"
+                    value={formik.values.password}
+                    onChangeText={formik.handleChange('password')}
+                    onBlur={formik.handleBlur('password')}
+                    secureTextEntry
+                />
+                
+                {formik.touched.confirmPassword && formik.errors.confirmPassword ? (
+                    <Text style={formStyles.errorText}>{formik.errors.confirmPassword}</Text>
+                ) : null}
+                <TextInput
+                    style={[
+                        formStyles.input,
+                        formik.touched.confirmPassword && formik.errors.confirmPassword && formStyles.inputError,
+                    ]}
+                    placeholder="Confirmer le mot de passe"
+                    value={formik.values.confirmPassword}
+                    onChangeText={formik.handleChange('confirmPassword')}
+                    onBlur={formik.handleBlur('confirmPassword')}
+                    secureTextEntry
+                />
+               
+
+                <TouchableOpacity style={formStyles.button} onPress={formik.handleSubmit}>
+                    <Text style={formStyles.buttonText}>S'inscrire</Text>
+                </TouchableOpacity>
+           </ScrollView>
            
-            <TextInput
-                style={[
-                    formStyles.input,
-                    formik.touched.name && formik.errors.name && formStyles.inputError,
-                ]}
-                placeholder="Nom"
-                value={formik.values.name}
-                onChangeText={formik.handleChange('name')}
-                onBlur={formik.handleBlur('name')}
-            />
-
-            {formik.touched.name && formik.errors.name ? (
-                <Text style={formStyles.errorText}>{formik.errors.name}</Text>
-            ) : null}
-
-            <TextInput
-                style={[
-                    formStyles.input,
-                    formik.touched.prenom && formik.errors.prenom && formStyles.inputError,
-                ]}
-                placeholder="Prénom"
-                value={formik.values.prenom}
-                onChangeText={formik.handleChange('prenom')}
-                onBlur={formik.handleBlur('prenom')}
-            />
-            {formik.touched.prenom && formik.errors.prenom ? (
-                <Text style={formStyles.errorText}>{formik.errors.prenom}</Text>
-            ) : null}
-
-            <TextInput
-                style={[
-                    formStyles.input,
-                    formik.touched.email && formik.errors.email && formStyles.inputError,
-                ]}
-                placeholder="Email"
-                value={formik.values.email}
-                onChangeText={formik.handleChange('email')}
-                onBlur={formik.handleBlur('email')}
-                keyboardType="email-address"
-            />
-            {formik.touched.email && formik.errors.email ? (
-                <Text style={formStyles.errorText}>{formik.errors.email}</Text>
-            ) : null}
-
-            <TextInput
-                style={[
-                    formStyles.input,
-                    formik.touched.password && formik.errors.password && formStyles.inputError,
-                ]}
-                placeholder="Mot de passe"
-                value={formik.values.password}
-                onChangeText={formik.handleChange('password')}
-                onBlur={formik.handleBlur('password')}
-                secureTextEntry
-            />
-            {formik.touched.password && formik.errors.password ? (
-                <Text style={formStyles.errorText}>{formik.errors.password}</Text>
-            ) : null}
-
-            <TextInput
-                style={[
-                    formStyles.input,
-                    formik.touched.confirmPassword && formik.errors.confirmPassword && formStyles.inputError,
-                ]}
-                placeholder="Confirmer le mot de passe"
-                value={formik.values.confirmPassword}
-                onChangeText={formik.handleChange('confirmPassword')}
-                onBlur={formik.handleBlur('confirmPassword')}
-                secureTextEntry
-            />
-            {formik.touched.confirmPassword && formik.errors.confirmPassword ? (
-                <Text style={formStyles.errorText}>{formik.errors.confirmPassword}</Text>
-            ) : null}
-
-            <TouchableOpacity style={formStyles.button} onPress={formik.handleSubmit}>
-                <Text style={formStyles.buttonText}>S'inscrire</Text>
-            </TouchableOpacity>
         </View>
     );
 }

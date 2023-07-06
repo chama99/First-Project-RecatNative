@@ -1,62 +1,62 @@
-import React, { useState } from 'react';
-import { Image, TextInput, TouchableOpacity, Text, SafeAreaView, Alert, View } from 'react-native';
-import appStyles from '../styles/appStyles';
-import formStyles from '../styles/formStyles';
-import AsyncStorage from '@react-native-async-storage/async-storage';
+import React from 'react';
+import { Image, TextInput, TouchableOpacity, Text, View, Alert } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
-import axios from 'axios';
+import { useFormik } from 'formik';
+import formStyles from '../styles/formStyles';
+import appStyles from '../styles/appStyles';
+import * as yup from 'yup';
+export async function login (email,password)  {
+    try {
+        const response = await axios.post('http://192.168.3.121:80/login', {
+            email,
+            password
+        });
+
+        return Promise.resolve(response.data);
+
+    } catch (error) {
+        return Promise.reject({ error });
+    }
+};
+
+const validationSchema = yup.object().shape({
+    email: yup.string().email("L'email doit être valide").required("L'email est requis"),
+    password: yup.string().required('Le mot de passe est requis'),
+});
 
 const Connexion = ({ navigation }) => {
-    const [email, setEmail] = useState('');
-    const [password, setPassword] = useState('');
-    const [hidePassword, setHidePassword] = useState(true);
+    const formik = useFormik({
+        initialValues: {
+            email: '',
+            password: '',
+        },
+        validationSchema: validationSchema,
+        onSubmit: async (values) => {
+           console.log(values)
+           
+            try {
+                if (formik.isValid) {
+                    const response = await login(values.email,values.password);
+                    console.log(response)
 
-    const handleEmailChange = (text) => {
-        setEmail(text);
-    };
+                    if (response.mssg === "Mot de passe ou email invalide" || response.mssg === "L'e-mail n'a pas été vérifié.") {
+                        Alert.alert('Erreur', response.mssg);
 
-    const handlePasswordChange = (text) => {
-        setPassword(text);
-    };
+                    } else {
+                        // Stocker le jeton d'accès localement avec AsyncStorage
+                        await AsyncStorage.setItem('accessToken', response.token);
 
-    const login = async () => {
-        try {
-            const response = await axios.post('http://192.168.30.152:80/login', {
-                email,
-                password
-            });
-
-            return Promise.resolve(response.data);
-
-        } catch (error) {
-            return Promise.reject({ error });
-        }
-    };
-
-    const Test = async () => {
-        try {
-            const response = await login();
-            console.log(response)
-
-            if (response.mssg === "Mot de passe ou email invalide" || response.mssg === "L'e-mail n'a pas été vérifié.") {
-                Alert.alert('Erreur', response.mssg);
-               
-            } else {
-                // Stocker le jeton d'accès localement avec AsyncStorage
-                await AsyncStorage.setItem('accessToken', response.token);
-
-                console.log('Token:', response.user);
-                setEmail('');
-                setPassword('');
-                navigation.navigate('Home', { id: response.user._id });
-
+                        console.log('Token:', response.user);
+                        setEmail('');
+                        setPassword('');
+                        navigation.navigate('Home', { id: response.user._id });
+                    }
+                }
+            } catch (error) {
+                console.log('Error:', error);
             }
-
-        } catch (error) {
-            console.log('Error:', error);
-        }
-
-    };
+        },
+    });
 
     const goToCreateAccount = () => {
         navigation.navigate('Compte');
@@ -67,49 +67,56 @@ const Connexion = ({ navigation }) => {
     };
 
     const togglePasswordVisibility = () => {
-        setHidePassword(!hidePassword);
+        formik.setFieldValue('hidePassword', !formik.values.hidePassword);
     };
 
     return (
         <View style={appStyles.container}>
-            <Image source={require('../assets/whitecape1.png')} style={formStyles.image} />
-            <TextInput
-                style={formStyles.input}
-                placeholder="Email"
-                keyboardType="email-address"
-                value={email}
-                onChangeText={handleEmailChange}
-            />
-
-          
-            <View style={formStyles.passwordIconContainer}>
+            <View style={formStyles.container}>
+                <Image source={require('../assets/whitecape1.png')} style={formStyles.image} />
+                {formik.touched.email && formik.errors.email && (
+                    <Text style={formStyles.errorText}>{formik.errors.email}</Text>
+                )}
                 <TextInput
-                    style={formStyles.passwordInput}
-                    placeholder="Mot de passe"
-                    secureTextEntry={hidePassword}
-                    value={password}
-                    onChangeText={handlePasswordChange}
+                    style={formStyles.input}
+                    placeholder="Adresse e-mail"
+                    keyboardType="email-address"
+                    value={formik.values.email}
+                    onChangeText={formik.handleChange('email')}
+                    onBlur={formik.handleBlur('email')}
                 />
-                <TouchableOpacity style={formStyles.passwordIcon} onPress={togglePasswordVisibility}>
-                    <Ionicons name={hidePassword ? 'md-eye-off' : 'md-eye'} size={24} color="black" />
+                
+                {formik.touched.password && formik.errors.password && (
+                    <Text style={formStyles.errorText}>{formik.errors.password}</Text>
+                )}
+                <View style={formStyles.passwordIconContainer}>
+                    <TextInput
+                        style={formStyles.passwordInput}
+                        placeholder="Mot de passe"
+                        secureTextEntry={formik.values.hidePassword}
+                        value={formik.values.password}
+                        onChangeText={formik.handleChange('password')}
+                        onBlur={formik.handleBlur('password')}
+                    />
+                    <TouchableOpacity style={formStyles.passwordIcon} onPress={togglePasswordVisibility}>
+                        <Ionicons name={formik.values.hidePassword ? 'md-eye-off' : 'md-eye'} size={24} color="black" />
+                    </TouchableOpacity>
+                </View>
+              
+
+                <TouchableOpacity style={formStyles.button} onPress={formik.handleSubmit}>
+                    <Text style={formStyles.buttonText}>Se connecter</Text>
                 </TouchableOpacity>
-            </View>
-               
-          
+                <TouchableOpacity onPress={goToForgetPassword}>
+                    <Text style={formStyles.textc}>Mot de passe oublié ?</Text>
+                </TouchableOpacity>
 
-            <TouchableOpacity style={formStyles.button} onPress={Test}>
-                <Text style={formStyles.buttonText}>Connexion</Text>
-            </TouchableOpacity>
-            <TouchableOpacity onPress={goToForgetPassword}>
-                <Text style={formStyles.textc}>Mot de passe oublié ?</Text>
-            </TouchableOpacity>
-           
 
-            <TouchableOpacity onPress={goToCreateAccount}>
-                <Text> <Text style={formStyles.col}>Ne pas avoir de compte ?</Text><Text style={formStyles.textc}> S'inscrire</Text></Text> 
-            </TouchableOpacity>
-
-           
+                <TouchableOpacity onPress={goToCreateAccount}>
+                    <Text style={formStyles.textc}>Créer nouveau compte</Text>
+                </TouchableOpacity>
+          </View>
+            
         </View>
     );
 };

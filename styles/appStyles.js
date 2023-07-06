@@ -7,10 +7,14 @@ const { height, width } = Dimensions.get('window');
 export default StyleSheet.create({
     container: {
         flex: 1,
-        justifyContent: 'space-between',
-        paddingVertical:22 , // Utilisation de 10% de la hauteur de l'écran comme padding vertical
-        paddingHorizontal:22, // Utilisation d'une valeur fixe de padding horizontal
+       
+        paddingVertical:10 , 
+        paddingHorizontal:20, 
         backgroundColor: 'white',
+        paddingTop:200,
+        
+        
+
     },
   
 });

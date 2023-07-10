@@ -27,8 +27,8 @@ const Accueil = ({ user }) => {
                             onChangeText={setSearchValue}
                         />
                     </View>
-                    <Ionicons name="md-add-circle-outline" style={styles.Icon} />
-                    <Ionicons name="ios-notifications" style={styles.Icon} />
+                <Ionicons name="add-outline" style={styles.Icon} />
+                <Ionicons name="notifications-outline" style={styles.Icon} />
                 </View>
             <ScrollView style={styles.scrollView}>
                 <View style={styles.container1}>
@@ -53,7 +53,7 @@ const styles = StyleSheet.create({
     container: {
         flexDirection: 'row',
         padding:16,
-        backgroundColor: '#D8BFD8',
+        backgroundColor: 'white',
     },
     container1: {
         padding:16,

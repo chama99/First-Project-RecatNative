@@ -5,9 +5,19 @@ const { height, width } = Dimensions.get('window');
 
 export default StyleSheet.create({
     // Autres styles...
+    view: {
+        flex: 1,
+        justifyContent: 'center',
+       
+        paddingVertical: 10,
+        paddingHorizontal: 20,
+        backgroundColor: '#DCDCDC',
+       },
+ 
+    
     container:{
         borderWidth:3,
-        borderColor: '#FCE7FF',
+        borderColor: 'white',
         borderRadius: 20,
         backgroundColor: 'white',
         paddingLeft:20,
@@ -56,6 +66,7 @@ export default StyleSheet.create({
        
         marginTop: 10,
        backgroundColor: 'rgb(143, 71, 155)', // Couleur de bordure par défaut
+       marginBottom:20
     },
     buttonText: {
         color: 'white',
@@ -72,10 +83,11 @@ export default StyleSheet.create({
         marginTop:20
     },
     imgp: {
-        height: 120,
         width: 120,
-        alignSelf: 'center',
-        borderRadius: 8,
+        height: 120,
+        borderRadius: 25,
+    
+        marginTop: 20,
         borderWidth: 2,
         borderColor: '#fff',
         
@@ -118,6 +130,7 @@ export default StyleSheet.create({
     passwordInput: {
         flex: 1,
         height: 40,
+  
     },
     passwordIcon: {
         marginLeft: 10,
@@ -128,6 +141,9 @@ export default StyleSheet.create({
         fontSize: 12,
         marginTop: 5,
     },
-    
+    eye:{
+         fontSize:24,
+         color:"black"
+    }
 
 });

@@ -10,7 +10,7 @@ import Accueil from './Accueil';
 
 const fetchUser = async (id) => {
     try {
-        const response = await axios.get(`http://192.168.3.121:80/getById/${id}`);
+        const response = await axios.get(`http://192.168.1.16:80/getById/${id}`);
         console.log(response.data);
         return response.data.user;
     } catch (error) {
@@ -129,10 +129,10 @@ const Home = ({ route, navigation }) => {
 
         switch (route.key) {
             case 'home':
-                iconName = 'home';
+                iconName = 'home-outline';
                 break;
             case 'profile':
-                iconName = 'account';
+                iconName = 'account-outline';
                 break;
             case 'logout':
                 iconName = 'logout';
@@ -140,7 +140,7 @@ const Home = ({ route, navigation }) => {
             default:
                 iconName = 'home';
         }
-        const iconColor = focused ? '#D8BFD8' : color; // Définir la couleur de l'icône en fonction de son état
+        const iconColor = focused ? 'rgb(143, 71, 155)' : color; // Définir la couleur de l'icône en fonction de son état
         return <Icon name={iconName} size={24} color={iconColor} />;
     };
 

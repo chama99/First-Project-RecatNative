@@ -1,5 +1,5 @@
 const route=require('express').Router()
-const routemodel=require('../models/user.model')
+const routemodel=require('../controllers/user')
 const jwt=require('jsonwebtoken')
  
 /*const privatekey = "this key hdhfkflflfl"

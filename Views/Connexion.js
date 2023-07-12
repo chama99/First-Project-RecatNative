@@ -3,14 +3,14 @@ import { Image, TextInput, TouchableOpacity, Text, View, Alert } from 'react-nat
 import { Ionicons } from '@expo/vector-icons';
 import { useFormik } from 'formik';
 import formStyles from '../styles/formStyles';
-import appStyles from '../styles/appStyles';
+
 import * as yup from 'yup';
 import axios from 'axios';
 import AsyncStorage from '@react-native-async-storage/async-storage'; // Importation d'AsyncStorage
 
 export async function login(email, password) {
     try {
-        const response = await axios.post('http://192.168.1.16:80/login', {
+        const response = await axios.post('http://192.168.137.66:80/login', {
             email,
             password
         });

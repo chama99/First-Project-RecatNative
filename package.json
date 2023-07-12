@@ -38,6 +38,7 @@
     "react-native-tailwindcss": "^1.1.11",
     "react-native-vector-icons": "^9.2.0",
     "react-native-web": "~0.18.10",
+    "styled-components": "^6.0.3",
     "yup": "^1.2.0"
   },
   "devDependencies": {

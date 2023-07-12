@@ -5,12 +5,13 @@ import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import homeStyles from '../styles/homeStyle';
 import { TouchableOpacity } from 'react-native';
 import { FontAwesome } from '@expo/vector-icons';
+import { Ionicons } from '@expo/vector-icons';
 import axios from 'axios';
 import Accueil from './Accueil';
 
 const fetchUser = async (id) => {
     try {
-        const response = await axios.get(`http://192.168.1.16:80/getById/${id}`);
+        const response = await axios.get(`http://192.168.137.66:80/getById/${id}`);
         console.log(response.data);
         return response.data.user;
     } catch (error) {
@@ -39,13 +40,13 @@ const Home = ({ route, navigation }) => {
         };
 
         fetchUserData();
-      
+
     }, [id]);
     const updateUserProfile = async () => {
         const updatedUserData = await fetchUser(id);
         setUser(updatedUserData);
     };
-    
+
 
     let ImageSource = require('../assets/prof.png');
     if (user && user.image && user.image.uri !== "require('../assets/prof.png')") {
@@ -54,26 +55,26 @@ const Home = ({ route, navigation }) => {
 
 
 
-   
-  
- 
+
+
+
 
     const [index, setIndex] = useState(0);
     const [routes] = useState([
         { key: 'home', title: 'Accueil', icon: 'home' },
-        { key: 'profile', title: 'Profil', icon: 'account' },
-        { key: 'logout', title: 'Déconnexion', icon: 'logout' },
+        { key: 'messages', title: 'Messages', icon: 'account' },
+        { key: 'notifications', title: 'Notifications', icon: 'notifications' },
     ]);
 
     const renderScene = BottomNavigation.SceneMap({
         home: () => (
-            <Accueil user={user} />
+            <Accueil user={user} navigation={navigation}  />
 
         ),
-        profile: () => (
+       messages: () => (
             <View style={homeStyles.container}>
                 <View style={homeStyles.contentContainer}>
-                     <Image source={ImageSource} style={homeStyles.profileImage} />
+                    <Image source={ImageSource} style={homeStyles.profileImage} />
                     <Text style={homeStyles.greetingText}>{user ? `${user.nom} ${user.prenom}` : ''}</Text>
                     <Text style={homeStyles.Text}>Email: {user ? user.email : ''}</Text>
                 </View>
@@ -124,28 +125,28 @@ const Home = ({ route, navigation }) => {
         );
     };
 
-    const renderIcon = ({ route,color, focused }) => {
+    const renderIcon = ({ route, color, focused }) => {
         let iconName;
 
         switch (route.key) {
             case 'home':
-                iconName = 'home-outline';
+                iconName = 'home';
                 break;
-            case 'profile':
-                iconName = 'account-outline';
+            case 'messages':
+                iconName = 'ios-chatbubble-ellipses-sharp';
                 break;
-            case 'logout':
-                iconName = 'logout';
+            case 'notifications':
+                iconName = 'notifications';
                 break;
             default:
                 iconName = 'home';
         }
         const iconColor = focused ? 'rgb(143, 71, 155)' : color; // Définir la couleur de l'icône en fonction de son état
-        return <Icon name={iconName} size={24} color={iconColor} />;
+        return <Ionicons name={iconName} size={24} color={iconColor} />;
     };
 
     const goToProfil = () => {
-        navigation.navigate('Profil', { user: user,updateUserProfile: updateUserProfile });
+        navigation.navigate('UpdateProfil', { user: user, updateUserProfile: updateUserProfile });
     };
     const goToPassword = () => {
         navigation.navigate('Password', { user: user });
@@ -153,10 +154,11 @@ const Home = ({ route, navigation }) => {
     return (
         <View style={homeStyles.container}>
             <BottomNavigation
-                navigationState={{ index, routes }} 
+                navigationState={{ index, routes }}
                 onIndexChange={handleIndexChange}
                 renderScene={renderScene}
                 renderIcon={renderIcon}
+                barStyle={homeStyles.bottomNavigation}
             />
         </View>
     );

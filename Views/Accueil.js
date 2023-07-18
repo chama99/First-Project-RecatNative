@@ -1,61 +1,43 @@
 import React, { useState } from 'react';
-import { View, Text, Image, StyleSheet, TextInput, ScrollView, TouchableOpacity } from 'react-native';
-import {  Feather } from '@expo/vector-icons';
-import styled from 'styled-components/native'
+import { View, Text, Image, StyleSheet, ScrollView, TouchableOpacity, FlatList, TextInput } from 'react-native';
+
+import Modal from 'react-native-modal';
 
 import {
     Ionicons,
     MaterialIcons,
-    MaterialCommunityIcons
+    FontAwesome,
+    Feather, AntDesign,
+
 } from '@expo/vector-icons'
 
-
-
-const Container = styled.View`
-	width: 100%;
-	height: 92px;
-`
-const Row = styled.View`
-	flex-direction: row;
-	background: #ffffff;
-	width: 100%;
-	padding: 0 11px;
-	align-items: center;
-`
-const Input = styled.TextInput`
-	height: 50px;
-	width: 100%;
-	padding: 0 8px;
-`
-const Divider = styled.View`
-	width: 100%;
-	height: 0.5px;
-	background: #f0f0f0;
-`
-const Menu = styled.View`
-	flex: 1;
-	flex-direction: row;
-	align-items: center;
-	justify-content: center;
-	height: 42px;
-`
-const MenuText = styled.Text`
-	padding-left: 11px;
-	font-weight: 500;
-	font-size: 12px;
-`
-const Separator = styled.View`
-	width: 1px;
-	height: 26px;
-	background: #f0f0f0;
-`
-const BottomDivider = styled.View`
-	width: 100%;
-	height: 9px;
-	background: #f0f2f5;
-`
 const Accueil = ({ user, navigation }) => {
     const [searchValue, setSearchValue] = useState('');
+    const [showPopup, setShowPopup] = useState(false);
+    const [comment, setComment] = useState('');
+    const [comments, setComments] = useState([]);
+    const [liked, setLiked] = useState(false);
+    const [NbrLike, setNbrLike] = useState(22);
+
+    const handleLike = () => {
+        setLiked(!liked);
+        if (liked != false) {
+            setNbrLike(NbrLike - 1);
+        } else {
+            setNbrLike(NbrLike + 1);
+        }
+    };
+
+    const togglePopup = () => {
+        setShowPopup(!showPopup);
+    };
+
+    const sendComment = () => {
+        if (comment !== '') {
+            setComments([...comments, comment]);
+            setComment('');
+        }
+    };
 
     if (!user) {
         return null;
@@ -71,100 +53,99 @@ const Accueil = ({ user, navigation }) => {
         <View style={styles.container2}>
             <View style={styles.container}>
                 <Text style={styles.textl}>𝔀𝓱𝓲𝓽𝓮𝓬𝓪𝓹𝓮 𝓼𝓸𝓬𝓲𝓪𝓵</Text>
-
                 <TouchableOpacity onPress={goToProfil}>
                     {image && <Image source={image} style={styles.profileImage} />}
                 </TouchableOpacity>
             </View>
-            <ScrollView >
-               
-                <View style={styles.container}>
-                    <Container>
-                        <Row>
-                            <TouchableOpacity style={styles.touchableOpacity}>
-                             <Text>Créer une publication</Text>
-                            </TouchableOpacity>
-                            
-                        </Row>
-                        <Divider />
-                        <Row>
-                            <Menu>
-                                <Ionicons name='ios-videocam' size={22} color='#F44337' />
-                                <MenuText>Live</MenuText>
-                            </Menu>
-                            <Separator />
-
-                            <Menu>
-                                <MaterialIcons
-                                    name='photo-size-select-actual'
-                                    size={20}
-                                    color='#4CAF50'
+            <ScrollView>
+                <View style={styles.container1}>
+                    <TouchableOpacity style={styles.pub}>
+                        <Text>Créer une publication</Text>
+                    </TouchableOpacity>
+                    <View style={styles.divider} />
+                    <View style={styles.container3}>
+                        <View style={{ flexDirection: 'row' }}>
+                            <Ionicons name='ios-videocam' size={22} color='#F44337' />
+                            <Text>Live</Text>
+                        </View>
+                        <View style={styles.separator} />
+                        <View style={{ flexDirection: 'row' }}>
+                            <MaterialIcons
+                                name='photo-size-select-actual'
+                                size={20}
+                                color='#4CAF50'
+                            />
+                            <Text>Photo</Text>
+                        </View>
+                    </View>
+                </View>
+                <View style={styles.container1}>
+                    <View style={styles.container3}>
+                        {image && <Image source={image} style={styles.Image} />}
+                        <View style={{ flexDirection: 'column' }}>
+                            <Text style={styles.text}>{nom} {prenom}</Text>
+                            <Text style={styles.text}>9mm</Text>
+                        </View>
+                        <Feather name="more-horizontal" style={styles.Icon2} />
+                    </View>
+                    {image && <Image source={require('../assets/whitecape1.png')} />}
+                    <View style={styles.container3}>
+                        <View style={{ flexDirection: 'row' }}>
+                            <AntDesign name="like2" size={24} color="black" />
+                            <Text style={{ paddingLeft: 10, paddingTop: 5 }}>{NbrLike}</Text>
+                        </View>
+                        <Text>9 commentaires</Text>
+                    </View>
+                    <View style={styles.divider} />
+                    <View style={styles.container3}>
+                        <TouchableOpacity
+                            style={{ flexDirection: 'row' }}
+                            onPress={handleLike}
+                        >
+                            <AntDesign name={liked ? 'like1' : 'like2'} size={24} color={liked ? 'rgb(143, 71, 155)' : 'black'} />
+                            <Text style={{ paddingLeft: 10, paddingTop: 5, color: liked ? 'rgb(143, 71, 155)' : 'black' }}>
+                                J'aime
+                            </Text>
+                        </TouchableOpacity>
+                        <TouchableOpacity style={{ flexDirection: 'row' }} onPress={togglePopup}>
+                            <FontAwesome name="comment-o" size={24} color="black" />
+                            <Text style={{ paddingLeft: 10, paddingTop: 5 }}>Commenter</Text>
+                        </TouchableOpacity>
+                        <Modal
+                            isVisible={showPopup}
+                            backdropOpacity={0.5}
+                            onBackdropPress={togglePopup}
+                            style={{ margin: 0, justifyContent: 'flex-end' }}
+                        >
+                            <View style={{ backgroundColor: 'white', padding: 20 }}>
+                                {/* Liste des commentaires */}
+                                <FlatList
+                                    data={comments}
+                                    renderItem={({ item }) => (
+                                        <Text>{item}</Text>
+                                    )}
+                                    keyExtractor={(item, index) => index.toString()}
                                 />
-                                <MenuText>Photo</MenuText>
-                            </Menu>
-                            <Separator />
-
-                            <Menu>
-                                <MaterialCommunityIcons
-                                    name='video-plus'
-                                    size={22}
-                                    color='#E141FC'
-                                />
-                                <MenuText>Room</MenuText>
-                            </Menu>
-                        </Row>
-                    </Container>
-                </View>
-                <View style={styles.container1}>
-                    <View style={styles.container3}>
-                        {image && <Image source={image} style={styles.Image} />}
-                        <Text style={styles.text}>Nom du poste</Text>
-                        <Feather name="more-horizontal" style={styles.Icon2} />
+                                <TouchableOpacity style={styles.pub}>
+                                    <TextInput
+                                        value={comment}
+                                        onChangeText={text => setComment(text)}
+                                        placeholder="Écrire un commentaire..."
+                                       
+                                    />
+                                    <TouchableOpacity onPress={sendComment}>
+                                        <Ionicons name="send-outline" size={24} color="black" />
+                                    </TouchableOpacity>
+                                </TouchableOpacity>
+                               
+                                
+                                <TouchableOpacity onPress={togglePopup} style={{ marginTop: 10 }}>
+                                    <Text>Fermer</Text>
+                                </TouchableOpacity>
+                            </View>
+                        </Modal>
                     </View>
                 </View>
-                <View style={styles.container1}>
-                    <View style={styles.container3}>
-                        {image && <Image source={image} style={styles.Image} />}
-                        <Text style={styles.text}>Nom du poste</Text>
-                        <Feather name="more-horizontal" style={styles.Icon2} />
-                    </View>
-                </View>
-                <View style={styles.container1}>
-                    <View style={styles.container3}>
-                        {image && <Image source={image} style={styles.Image} />}
-                        <Text style={styles.text}>Nom du poste</Text>
-                        <Feather name="more-horizontal" style={styles.Icon2} />
-                    </View>
-                </View>
-                <View style={styles.container1}>
-                    <View style={styles.container3}>
-                        {image && <Image source={image} style={styles.Image} />}
-                        <Text style={styles.text}>Nom du poste</Text>
-                        <Feather name="more-horizontal" style={styles.Icon2} />
-                    </View>
-                </View>
-                <View style={styles.container1}>
-                    <View style={styles.container3}>
-                        {image && <Image source={image} style={styles.Image} />}
-                        <Text style={styles.text}>Nom du poste</Text>
-                        <Feather name="more-horizontal" style={styles.Icon2} />
-                    </View>
-                </View>
-                <View style={styles.container1}>
-                    <View style={styles.container3}>
-                        {image && <Image source={image} style={styles.Image} />}
-                        <Text style={styles.text}>Nom du poste</Text>
-                        <Feather name="more-horizontal" style={styles.Icon2} />
-                    </View>
-                </View>
-                <View style={styles.container1}>
-                    <View style={styles.container3}>
-                        {image && <Image source={image} style={styles.Image} />}
-                        <Text style={styles.text}>Nom du poste</Text>
-                        <Feather name="more-horizontal" style={styles.Icon2} />
-                    </View>
-                </View>
-                
             </ScrollView>
         </View>
     );
@@ -175,20 +156,20 @@ const styles = StyleSheet.create({
         flexDirection: 'row',
         padding: 16,
         backgroundColor: 'white',
-        marginBottom: 10     
+        marginBottom: 10
     },
     container1: {
         padding: 16,
         backgroundColor: 'white',
-        marginBottom:10
+        marginBottom: 10
     },
     container2: {
         flex: 1,
         backgroundColor: '#DCD9DD',
     },
     container3: {
+        justifyContent: 'space-between',
         flexDirection: 'row',
-       
     },
     profileImage: {
         width: 50,
@@ -198,17 +179,15 @@ const styles = StyleSheet.create({
         marginTop: 20,
         marginLeft: 120,
     },
-   Image: {
+    Image: {
         width: 50,
         height: 50,
         borderRadius: 25,
         marginBottom: 16,
-        marginTop: 20,
-        
+        marginTop: 10,
     },
     searchContainer: {
-     
-        marginTop: 30,
+        marginTop: 10,
     },
     searchInput: {
         borderWidth: 1,
@@ -240,43 +219,37 @@ const styles = StyleSheet.create({
     Icon2: {
         fontSize: 25,
         color: 'black',
-        marginBottom: 16,
-        marginTop: 25,
-        paddingLeft: 180,
+        paddingLeft: 200,
     },
     textl: {
-        fontSize:30,
+        fontSize: 30,
         alignSelf: 'center',
         marginTop: 10,
+        color: 'rgb(143, 71, 155)'
     },
-   touchableOpacity: {
-    backgroundColor: 'white',
-    padding: 10,
-    borderRadius: 5,
-       borderColor:'#3498db'
-  
-  },
-  
-  textp: {
-    color: '#fff',
-    fontsize: 16,
-    fontweight: 'bold'
-},
-  
+    pub: {
+        backgroundColor: '#F2F3F5',
+        padding: 10,
+        borderRadius: 50,
+        borderColor: '#F2F3F5',
+        borderWidth: 1,
+        flexDirection:'row',
+        justifyContent:'space-between'
+    },
+    textp: {
+        color: '#fff',
+        fontsize: 16,
+        fontweight: 'bold'
+    },
     text: {
         fontSize: 10,
-        marginTop: 30,
-        marginLeft: 30,
+        marginTop: 10,
+        marginLeft: 10,
         fontWeight: 'bold',
     },
-
     button: {
         height: 30,
-
-
         borderRadius: 20,
-
-       
         backgroundColor: 'rgb(143, 71, 155)', // Couleur de bordure par défaut
         marginBottom: 0
     },
@@ -287,6 +260,18 @@ const styles = StyleSheet.create({
         textAlign: 'center',
         marginTop: 10
     },
+    divider: {
+        width: '100%',
+        height: 1,
+        backgroundColor: '#DCDCDC',
+        marginBottom: 10,
+        marginTop: 10,
+    },
+    separator: {
+        width: 1,
+        height: 26,
+        backgroundColor: '#DCDCDC',
+    }
 });
 
 export default Accueil;

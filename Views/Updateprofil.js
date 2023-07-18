@@ -8,7 +8,7 @@ import axios from 'axios';
 
 export async function ModifierUser(id, nom, prenom, image) {
     try {
-        const response = await axios.patch('http://192.168.137.66:80/UpdateUser', { id, nom, prenom, image });
+        const response = await axios.patch('http://192.168.1.16:80/UpdateUser', { id, nom, prenom, image });
         return Promise.resolve(response.data); // Renvoyer la réponse du serveur
     } catch (error) {
         return Promise.reject({ error });

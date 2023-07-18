@@ -10,7 +10,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage'; // Importa
 
 export async function login(email, password) {
     try {
-        const response = await axios.post('http://192.168.137.66:80/login', {
+        const response = await axios.post('http://192.168.1.16:80/login', {
             email,
             password
         });

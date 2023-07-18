@@ -15,7 +15,7 @@ export async function registerUser(nom, prenom, email, password, image) {
             image = { uri: "require('../assets/prof.png')" };
         }
 
-        const response = await axios.post('http://192.168.137.66:80/register', { nom, prenom, email, password, image: image });
+        const response = await axios.post('http://192.168.1.16:80/register', { nom, prenom, email, password, image: image });
         return Promise.resolve(response.data.mssg); // Renvoyer la réponse du serveur
     } catch (error) {
         return Promise.reject({ error });

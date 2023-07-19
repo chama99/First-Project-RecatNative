@@ -12,7 +12,7 @@ import { createDrawerNavigator } from '@react-navigation/drawer';
 import Password from './Views/changepasword.js';
 import Accueil from './Views/Accueil.js'
 import ResetPassword from './Views/forgetpassword.js'
-
+import CreatePost from './Views/CreatePost.js'
 const Drawer = createDrawerNavigator();
 const Stack = createNativeStackNavigator();
 
@@ -24,6 +24,7 @@ function App() {
      
       <Stack.Screen name="Home" component={Home} options={{ headerShown: false }} /> 
       <Stack.Screen name="Accueil" component={Accueil} options={{ headerShown: false }} /> 
+      <Stack.Screen name="CreatePost" component={CreatePost} options={{ headerTitle: 'Créer une publication', }} />
       <Stack.Screen name="Profil" component={Profil} options={{ headerTitle: '', }} />
       <Stack.Screen name="Deconnexion" component={Deconnexion} options={{ headerShown: false }} />
       <Stack.Screen name="UpdateProfil" component={UpdateProfil}  />

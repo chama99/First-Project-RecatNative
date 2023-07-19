@@ -7,9 +7,10 @@ import {
     Ionicons,
     MaterialIcons,
     FontAwesome,
-    Feather, AntDesign,
-
-} from '@expo/vector-icons'
+    Feather,
+    AntDesign,
+    EvilIcons
+} from '@expo/vector-icons';
 
 const Accueil = ({ user, navigation }) => {
     const [searchValue, setSearchValue] = useState('');
@@ -18,24 +19,26 @@ const Accueil = ({ user, navigation }) => {
     const [comments, setComments] = useState([]);
     const [liked, setLiked] = useState(false);
     const [NbrLike, setNbrLike] = useState(22);
+    const [NbrComment, setNbrComment] = useState(0);
+    const [sendcomment, setSendComment] = useState(false);
+    const [posts, setPosts] = useState([user,user,user,user]);
 
     const handleLike = () => {
         setLiked(!liked);
-        if (liked != false) {
-            setNbrLike(NbrLike - 1);
-        } else {
-            setNbrLike(NbrLike + 1);
-        }
+        setNbrLike((prevNbrLike) => (liked ? prevNbrLike - 1 : prevNbrLike + 1));
     };
 
     const togglePopup = () => {
         setShowPopup(!showPopup);
+        setSendComment(false);
     };
 
     const sendComment = () => {
         if (comment !== '') {
-            setComments([...comments, comment]);
+            setComments((prevComments) => [...prevComments, comment]);
+            setSendComment(true);
             setComment('');
+            setNbrComment(NbrComment + 1 )
         }
     };
 
@@ -48,7 +51,9 @@ const Accueil = ({ user, navigation }) => {
     const goToProfil = () => {
         navigation.navigate('Profil', { id: _id });
     };
-
+    const goToPost = () => {
+        navigation.navigate('CreatePost');
+    };
     return (
         <View style={styles.container2}>
             <View style={styles.container}>
@@ -59,93 +64,105 @@ const Accueil = ({ user, navigation }) => {
             </View>
             <ScrollView>
                 <View style={styles.container1}>
-                    <TouchableOpacity style={styles.pub}>
+                    <TouchableOpacity style={styles.pub} onPress={goToPost}>
                         <Text>Créer une publication</Text>
                     </TouchableOpacity>
                     <View style={styles.divider} />
                     <View style={styles.container3}>
                         <View style={{ flexDirection: 'row' }}>
-                            <Ionicons name='ios-videocam' size={22} color='#F44337' />
+                            <Ionicons name="ios-videocam" size={22} color="#F44337" />
                             <Text>Live</Text>
                         </View>
                         <View style={styles.separator} />
                         <View style={{ flexDirection: 'row' }}>
-                            <MaterialIcons
-                                name='photo-size-select-actual'
-                                size={20}
-                                color='#4CAF50'
-                            />
+                            <MaterialIcons name="photo-size-select-actual" size={20} color="#4CAF50" />
                             <Text>Photo</Text>
                         </View>
                     </View>
                 </View>
-                <View style={styles.container1}>
-                    <View style={styles.container3}>
-                        {image && <Image source={image} style={styles.Image} />}
-                        <View style={{ flexDirection: 'column' }}>
-                            <Text style={styles.text}>{nom} {prenom}</Text>
-                            <Text style={styles.text}>9mm</Text>
-                        </View>
-                        <Feather name="more-horizontal" style={styles.Icon2} />
-                    </View>
-                    {image && <Image source={require('../assets/whitecape1.png')} />}
-                    <View style={styles.container3}>
-                        <View style={{ flexDirection: 'row' }}>
-                            <AntDesign name="like2" size={24} color="black" />
-                            <Text style={{ paddingLeft: 10, paddingTop: 5 }}>{NbrLike}</Text>
-                        </View>
-                        <Text>9 commentaires</Text>
-                    </View>
-                    <View style={styles.divider} />
-                    <View style={styles.container3}>
-                        <TouchableOpacity
-                            style={{ flexDirection: 'row' }}
-                            onPress={handleLike}
-                        >
-                            <AntDesign name={liked ? 'like1' : 'like2'} size={24} color={liked ? 'rgb(143, 71, 155)' : 'black'} />
-                            <Text style={{ paddingLeft: 10, paddingTop: 5, color: liked ? 'rgb(143, 71, 155)' : 'black' }}>
-                                J'aime
-                            </Text>
-                        </TouchableOpacity>
-                        <TouchableOpacity style={{ flexDirection: 'row' }} onPress={togglePopup}>
-                            <FontAwesome name="comment-o" size={24} color="black" />
-                            <Text style={{ paddingLeft: 10, paddingTop: 5 }}>Commenter</Text>
-                        </TouchableOpacity>
-                        <Modal
-                            isVisible={showPopup}
-                            backdropOpacity={0.5}
-                            onBackdropPress={togglePopup}
-                            style={{ margin: 0, justifyContent: 'flex-end' }}
-                        >
-                            <View style={{ backgroundColor: 'white', padding: 20 }}>
-                                {/* Liste des commentaires */}
-                                <FlatList
-                                    data={comments}
-                                    renderItem={({ item }) => (
-                                        <Text>{item}</Text>
-                                    )}
-                                    keyExtractor={(item, index) => index.toString()}
-                                />
-                                <TouchableOpacity style={styles.pub}>
-                                    <TextInput
-                                        value={comment}
-                                        onChangeText={text => setComment(text)}
-                                        placeholder="Écrire un commentaire..."
-                                       
-                                    />
-                                    <TouchableOpacity onPress={sendComment}>
-                                        <Ionicons name="send-outline" size={24} color="black" />
-                                    </TouchableOpacity>
-                                </TouchableOpacity>
-                               
-                                
-                                <TouchableOpacity onPress={togglePopup} style={{ marginTop: 10 }}>
-                                    <Text>Fermer</Text>
-                                </TouchableOpacity>
+                {posts.map((user, index) => (
+                    <View>
+                       
+                        <View style={styles.container1}>
+                            <View style={styles.container3}>
+                                {user.image && <Image source={user.image} style={styles.Image} />}
+                                <View style={{ flexDirection: 'column' }}>
+                                    <Text style={styles.text}>{user.nom} {user.prenom}</Text>
+                                    <Text style={styles.text}>9mm</Text>
+                                </View>
+                                <Feather name="more-horizontal" style={styles.Icon2} />
                             </View>
-                        </Modal>
+                            {image && <Image source={require('../assets/whitecape1.png')} />}
+                            <View style={styles.container3}>
+                                <View style={{ flexDirection: 'row' }}>
+                                    <AntDesign name="like2" size={24} color="black" />
+                                    <Text style={{ paddingLeft: 10, paddingTop: 5 }}>{NbrLike}</Text>
+                                </View>
+                                <Text>{NbrComment} commentaires</Text>
+                            </View>
+                            <View style={styles.divider} />
+                            <View style={styles.container3}>
+                                <TouchableOpacity style={{ flexDirection: 'row' }} onPress={handleLike}>
+                                    <AntDesign
+                                        name={liked ? 'like1' : 'like2'}
+                                        size={24}
+                                        color={liked ? 'rgb(143, 71, 155)' : 'black'}
+                                    />
+                                    <Text style={{ paddingLeft: 10, paddingTop: 5, color: liked ? 'rgb(143, 71, 155)' : 'black' }}>
+                                        J'aime
+                                    </Text>
+                                </TouchableOpacity>
+                                <TouchableOpacity style={{ flexDirection: 'row' }} onPress={togglePopup}>
+                                    <FontAwesome name="comment-o" size={24} color="black" />
+                                    <Text style={{ paddingLeft: 10, paddingTop: 5 }}>Commenter</Text>
+                                </TouchableOpacity>
+                                <Modal
+                                    isVisible={showPopup}
+                                    backdropOpacity={0.5}
+                                    onBackdropPress={togglePopup}
+                                    style={{ marginTop: 20, margin: 0, justifyContent: 'flex-end' }}
+                                >
+                                    <View style={{ flex: 1, backgroundColor: 'white', padding: 20 }}>
+                                        <TouchableOpacity onPress={togglePopup} style={{ alignSelf: 'flex-end' }}>
+                                            <AntDesign name="close" size={24} color="black" />
+                                        </TouchableOpacity>
+                                        <ScrollView>
+                                            {comments.map((item, index) => (
+                                                <View style={{ flexDirection: 'row' }} key={index}>
+                                                    {user.image && <Image source={user.image} style={styles.Image} />}
+                                                    <View style={styles.comment}>
+                                                        <Text style={styles.textcomment}>{user.nom} {user.prenom}</Text>
+                                                        <Text >{item}</Text>
+                                                    </View>
+                                                </View>
+                                            ))}
+
+
+
+                                        </ScrollView>
+                                        <View style={styles.commentInputContainer}>
+                                            <TextInput
+                                                value={comment}
+                                                onChangeText={text => setComment(text)}
+                                                placeholder="Écrire un commentaire..."
+                                                style={styles.commentInput}
+                                            />
+                                            <TouchableOpacity onPress={sendComment}>
+                                                <Ionicons
+                                                    name={sendcomment ? 'send' : 'send-outline'}
+                                                    size={24}
+                                                    style={{ color: sendcomment ? 'rgb(143, 71, 155)' : 'black' }}
+                                                />
+                                            </TouchableOpacity>
+                                        </View>
+                                    </View>
+                                </Modal>
+                            </View>
+                        </View>
                     </View>
-                </View>
+                   
+                ))}
+                
             </ScrollView>
         </View>
     );
@@ -225,7 +242,7 @@ const styles = StyleSheet.create({
         fontSize: 30,
         alignSelf: 'center',
         marginTop: 10,
-        color: 'rgb(143, 71, 155)'
+        color: 'black'
     },
     pub: {
         backgroundColor: '#F2F3F5',
@@ -233,8 +250,42 @@ const styles = StyleSheet.create({
         borderRadius: 50,
         borderColor: '#F2F3F5',
         borderWidth: 1,
-        flexDirection:'row',
-        justifyContent:'space-between'
+        flexDirection: 'row',
+        justifyContent: 'space-between'
+    },
+    comment: {
+        backgroundColor: '#F2F3F5',
+        padding: 10,
+        marginLeft: 10,
+        marginBottom: 10,
+        borderRadius: 20,
+        borderColor: '#F2F3F5',
+        borderWidth: 2,
+        flexDirection: 'column',
+        alignItems: 'flex-start',
+        flexWrap: 'wrap',
+        flexShrink: 1
+    },
+
+
+    commentContent: {
+        marginLeft: 10,
+        flexDirection: 'column'
+    },
+    commentInputContainer: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        marginTop: 10
+    },
+    commentInput: {
+        flex: 1,
+        borderWidth: 1,
+        borderColor: '#F2F3F5',
+        borderRadius: 25,
+        paddingHorizontal: 10,
+        paddingVertical: 8,
+        backgroundColor: '#F2F3F5',
+        marginRight: 10
     },
     textp: {
         color: '#fff',
@@ -247,10 +298,15 @@ const styles = StyleSheet.create({
         marginLeft: 10,
         fontWeight: 'bold',
     },
+    textcomment: {
+        fontSize: 10,
+      
+        fontWeight: 'bold',
+    },
     button: {
         height: 30,
         borderRadius: 20,
-        backgroundColor: 'rgb(143, 71, 155)', // Couleur de bordure par défaut
+        backgroundColor: 'rgb(143, 71, 155)',
         marginBottom: 0
     },
     buttonText: {
@@ -271,7 +327,9 @@ const styles = StyleSheet.create({
         width: 1,
         height: 26,
         backgroundColor: '#DCDCDC',
-    }
+    },
+ 
+
 });
 
 export default Accueil;

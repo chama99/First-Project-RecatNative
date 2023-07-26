@@ -21,7 +21,7 @@ const Accueil = ({ user, navigation }) => {
     const [NbrLike, setNbrLike] = useState(22);
     const [NbrComment, setNbrComment] = useState(0);
     const [sendcomment, setSendComment] = useState(false);
-    const [posts, setPosts] = useState([user,user,user,user]);
+    const [posts, setPosts] = useState([user]);
 
     const handleLike = () => {
         setLiked(!liked);
@@ -70,18 +70,25 @@ const Accueil = ({ user, navigation }) => {
                     <View style={styles.divider} />
                     <View style={styles.container3}>
                         <View style={{ flexDirection: 'row' }}>
-                            <Ionicons name="ios-videocam" size={22} color="#F44337" />
-                            <Text>Live</Text>
+                            <TouchableOpacity style={styles.pub} >
+                                <Ionicons name="ios-videocam" size={22} color="#F44337" />
+                                <Text>Live</Text>
+                            </TouchableOpacity>
+                           
                         </View>
                         <View style={styles.separator} />
                         <View style={{ flexDirection: 'row' }}>
-                            <MaterialIcons name="photo-size-select-actual" size={20} color="#4CAF50" />
-                            <Text>Photo</Text>
+                            <TouchableOpacity style={styles.pub} onPress={goToPost}>
+                                <MaterialIcons name="photo-size-select-actual" size={20} color="#4CAF50" />
+                                <Text>Photo</Text>
+                            </TouchableOpacity>
+                           
+                            
                         </View>
                     </View>
                 </View>
-                {posts.map((user, index) => (
-                    <View>
+                {posts.map((user) => (
+                    <View key={user._id}>
                        
                         <View style={styles.container1}>
                             <View style={styles.container3}>
@@ -128,7 +135,7 @@ const Accueil = ({ user, navigation }) => {
                                         </TouchableOpacity>
                                         <ScrollView>
                                             {comments.map((item, index) => (
-                                                <View style={{ flexDirection: 'row' }} key={index}>
+                                                <View style={{ flexDirection: 'row' }} >
                                                     {user.image && <Image source={user.image} style={styles.Image} />}
                                                     <View style={styles.comment}>
                                                         <Text style={styles.textcomment}>{user.nom} {user.prenom}</Text>

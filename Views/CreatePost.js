@@ -1,10 +1,15 @@
-import React, { useState } from 'react';
-import { View, Text, Image, StyleSheet, TextInput, TouchableOpacity } from 'react-native';
-import ImagePicker from 'react-native-image-picker';
-
+import React, { useState, useMemo } from 'react';
+import { View, Text, Image, StyleSheet, TextInput, TouchableOpacity, ScrollView } from 'react-native';
+import * as ImagePicker from 'expo-image-picker';
+import { Entypo } from '@expo/vector-icons';
 const CreatePost = () => {
     const [postText, setPostText] = useState('');
     const [postImages, setPostImages] = useState([]);
+
+    // Utilisez useMemo pour calculer la désactivation du bouton en fonction des états du champ de texte et des images
+    const isButtonDisabled = useMemo(() => {
+        return postText.trim().length === 0 && postImages.length === 0;
+    }, [postText, postImages]);
 
     const handlePost = () => {
         // Logique pour poster le contenu
@@ -15,23 +20,33 @@ const CreatePost = () => {
         setPostImages([]);
     };
 
-    const handleImagePicker = () => {
-        ImagePicker.showImagePicker({ mediaType: 'photo' }, (response) => {
-            if (!response.didCancel && !response.error) {
-                const selectedImage = {
-                    uri: response.uri,
-                    type: response.type,
-                    name: response.fileName || 'image.jpg',
-                };
-                setPostImages([...postImages, selectedImage]);
-            }
+    const handleImagePicker = async () => {
+        const result = await ImagePicker.launchImageLibraryAsync({
+            mediaTypes: ImagePicker.MediaTypeOptions.Images,
+            allowsMultipleSelection: true,
         });
+        try {
+            if (!result.canceled) {
+                const selectedImages = result.assets.map((asset) => ({
+                    uri: asset.uri,
+                }));
+                setPostImages([...postImages, ...selectedImages]);
+            }
+        } catch (err) {
+            console.log(err);
+        }
+    };
+
+    const handleRemoveImage = (index) => {
+        const newPostImages = [...postImages];
+        newPostImages.splice(index, 1);
+        setPostImages(newPostImages);
     };
 
     return (
-        <View style={styles.container}>
+        <ScrollView style={styles.container}>
             <View style={styles.header}>
-                <Image source={require('../assets/whitecape1.png') } style={styles.profilePicture} />
+                <Image source={require('../assets/whitecape1.png')} style={styles.profilePicture} />
                 <Text style={styles.title}>Chama haddad</Text>
             </View>
             <TextInput
@@ -41,16 +56,32 @@ const CreatePost = () => {
                 multiline
                 style={styles.input}
             />
-            {postImages.map((image, index) => (
-                <Image key={index} source={{ uri: image.uri }} style={styles.selectedImage} />
-            ))}
+            <ScrollView horizontal>
+                <View style={styles.imageContainer}>
+                    {postImages.map((image, index) => (
+                        <View key={index}>
+                            <TouchableOpacity onPress={() => handleRemoveImage(index)} style={{ marginLeft: 170 }}>
+
+                                <Entypo name="cross" size={24} color="black" />
+
+                            </TouchableOpacity>
+                            <Image source={{ uri: image.uri }} style={styles.selectedImage} />
+                            
+                        </View>
+                    ))}
+                </View>
+            </ScrollView>
             <TouchableOpacity onPress={handleImagePicker} style={styles.button}>
-                <Text style={styles.buttonText}>Ajouter une image</Text>
+                <Text style={styles.buttonText}>Ajouter des images</Text>
             </TouchableOpacity>
-            <TouchableOpacity onPress={handlePost} style={styles.button}>
+            <TouchableOpacity
+                onPress={handlePost}
+                style={[styles.button, { opacity: isButtonDisabled ? 0.5 : 1 }]}
+                disabled={isButtonDisabled}
+            >
                 <Text style={styles.buttonText}>Publier</Text>
             </TouchableOpacity>
-        </View>
+        </ScrollView>
     );
 };
 
@@ -84,18 +115,22 @@ const styles = StyleSheet.create({
         height: 120,
         textAlignVertical: 'top',
     },
+    imageContainer: {
+        flexDirection: 'row',
+    },
     selectedImage: {
         width: 200,
         height: 200,
         borderRadius: 8,
-        marginBottom: 16,
+        marginRight: 16,
     },
     button: {
-        backgroundColor: '#4267B2',
+        backgroundColor: 'rgb(143, 71, 155)',
         borderRadius: 8,
         paddingVertical: 12,
         paddingHorizontal: 16,
         marginBottom: 16,
+        marginTop: 16,
     },
     buttonText: {
         color: '#fff',

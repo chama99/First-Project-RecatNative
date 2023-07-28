@@ -1,21 +1,21 @@
 import { BackHandler, View, Text, TouchableOpacity, Image, StyleSheet, ScrollView,TextInput} from 'react-native'
 import React ,{ useState,useEffect } from 'react'
-import homeStyles from '../styles/homeStyle';
-import { FontAwesome } from '@expo/vector-icons';
+
+
 import axios from 'axios';
 import Modal from 'react-native-modal';
 
 import {
     Ionicons,
     MaterialIcons,
-  
+    FontAwesome,
     Feather,
     AntDesign,
-    EvilIcons
+    
 } from '@expo/vector-icons';
 const fetchUser = async (id) => {
     try {
-        const response = await axios.get(`http://192.168.1.16:80/getById/${id}`);
+        const response = await axios.get(`http://192.168.1.16:8080/getById/${id}`);
         console.log(response.data);
         return response.data.user;
     } catch (error) {
@@ -35,6 +35,11 @@ function Profil ({ route, navigation})  {
     const [NbrComment, setNbrComment] = useState(0);
     const [sendcomment, setSendComment] = useState(false);
     const [posts, setPosts] = useState([user]);
+    const [showOptions, setShowOptions] = useState(false);
+
+    const handleMoreOptions = () => {
+        setShowOptions(!showOptions); // Inverser la valeur de showOptions pour afficher ou masquer le contenu bloqué
+    };
     const firstName = user?.nom || '';
     const lastName = user?.prenom || '';
     const idd = user?._id || '';
@@ -103,23 +108,28 @@ function Profil ({ route, navigation})  {
         <View style={styles.container2}>
             
             <View style={styles.container}>
-                <Image source={ImageSource} style={styles.profileImage} />
-               
-                        <View styles={{flexDirection:'column'}}>
-                            <Text style={styles.textl}> {lastName} {firstName}</Text>
-                         <Text style={styles.texte}>{email}</Text>
-                        </View>
-                        
-                      <View styles={{flexDirection:'row'}}>
-                        <TouchableOpacity style={styles.pub} onPress={goToPost}>
-                            <Text>Créer une publication</Text>
+                <View style={{flexDirection:'row'}}>
+                    <Image source={ImageSource} style={styles.profileImage} />
+                    <View style={{flexDirection:'column'}}>
+                        <Text style={styles.textl}> {lastName} {firstName}</Text>
+                        <Text style={styles.textee}>{email}</Text>
+                    </View>
+
+                </View>
+                <View styles={{ flexDirection: 'column' }}>
+                    
+                    <View style={{ flexDirection: 'row' }}>
+                        <TouchableOpacity style={styles.pube} onPress={goToProfil}>
+                            <MaterialIcons name="edit" style={styles.editIcon} />
+                            <Text style={styles.texte}>Modifier le profil</Text>
                         </TouchableOpacity>
-                        <TouchableOpacity style={styles.pub} onPress={goToPost}>
-                            <Text>Créer une publication</Text>
+                        <TouchableOpacity style={styles.pube} onPress={goToPassword}>
+                            <MaterialIcons name="edit" style={styles.editIcon} />
+                            <Text style={styles.texte}>Changer le mot de passe</Text>
                         </TouchableOpacity>
-                      </View>
-                
-               
+                    </View>
+
+                </View>
             </View>
             <ScrollView>
                 <View style={styles.container1}>
@@ -151,12 +161,29 @@ function Profil ({ route, navigation})  {
 
                         <View style={styles.container1}>
                             <View style={styles.container3}>
-                                {user && user.image && <Image source={user.image} style={styles.Image} />}
+                             <Image source={ImageSource} style={styles.Image} />
                                 <View style={{ flexDirection: 'column' }}>
                                     <Text style={styles.text}>{user ? `${user.nom} ${user.prenom}` : ''}</Text>
                                     <Text style={styles.text}>9mm</Text>
                                 </View>
-                                <Feather name="more-horizontal" style={styles.Icon2} />
+                                <TouchableOpacity onPress={handleMoreOptions}>
+                                    <Feather name="more-horizontal" style={styles.Icon2} />
+                                </TouchableOpacity>
+                                {/* Contenu bloqué */}
+                                {showOptions && (
+                                    <View style={styles.optionsContainer}>
+                                        {/* Option Modifier */}
+                                        <TouchableOpacity style={styles.optionItem} onPress={() => console.log('Action de modification')}>
+                                            <Feather name="edit" style={styles.optionIcon} />
+                                        </TouchableOpacity>
+
+                                        {/* Option Supprimer */}
+                                        <TouchableOpacity style={styles.optionItem} onPress={() => console.log('Action de suppression')}>
+                                            <Feather name="trash-2" style={styles.optionIcon} />
+                                        </TouchableOpacity>
+                                    </View>
+                                )}
+
                             </View>
                            <Image source={require('../assets/whitecape1.png')} />
                             <View style={styles.container3}>
@@ -236,7 +263,7 @@ function Profil ({ route, navigation})  {
 
 const styles = StyleSheet.create({
     container: {
-        flexDirection: 'row',
+        flexDirection:'column',
         padding: 16,
         backgroundColor: 'white',
         marginBottom: 10
@@ -255,13 +282,12 @@ const styles = StyleSheet.create({
         flexDirection: 'row',
     },
     profileImage: {
-        width: 50,
-        height: 50,
-        borderRadius: 25,
+        width: 100,
+        height: 100,
+        borderRadius: 50,
         marginBottom: 16,
-       
-     
     },
+
     Image: {
         width: 50,
         height: 50,
@@ -308,12 +334,18 @@ const styles = StyleSheet.create({
         fontSize: 20,
         alignSelf: 'flex-start',
         fontWeight:'bold',
-        color: 'black'
+        color: 'black',
+        margin:15
     },
     texte: {
-        fontSize: 15,
-        alignSelf: 'center',
-       
+        fontSize: 14,
+        alignSelf: 'flex-start',
+        fontWeight: 'bold',
+    },
+    textee: {
+        fontSize: 16,
+        alignSelf: 'flex-start',
+        
     },
     pub: {
         backgroundColor: '#F2F3F5',
@@ -323,6 +355,15 @@ const styles = StyleSheet.create({
         borderWidth: 1,
         flexDirection: 'row',
         justifyContent: 'space-between'
+    },
+    pube: {
+        backgroundColor: '#F2F3F5',
+        padding: 10,
+        borderRadius: 10,
+        borderColor: '#F2F3F5',
+        borderWidth: 1,
+        flexDirection:'row',
+        marginRight:2
     },
     comment: {
         backgroundColor: '#F2F3F5',
@@ -399,7 +440,33 @@ const styles = StyleSheet.create({
         height: 26,
         backgroundColor: '#DCDCDC',
     },
-
+    editIcon: {
+        fontSize: 20,
+       
+        color: 'black',
+    },
+    optionsContainer: {
+        marginTop: 10,
+        backgroundColor: 'white',
+        borderRadius: 8,
+        padding: 10,
+        elevation: 3,
+        shadowColor: '#000',
+        shadowOffset: {
+            width: 0,
+            height: 2,
+        },
+        shadowOpacity: 0.25,
+        shadowRadius: 3.84,
+    },
+    optionItem: {
+        paddingVertical: 8,
+        paddingHorizontal: 16,
+    },
+    optionText: {
+        fontSize: 16,
+        color: 'black',
+    },
 
 });
 

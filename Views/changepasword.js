@@ -1,151 +1,119 @@
-import React, { useState } from 'react';
+import React, { useState, useRef } from 'react';
 import { View, TextInput, TouchableOpacity, Text, Alert } from 'react-native';
-
+import { Formik } from 'formik';
+import * as Yup from 'yup';
 import bcrypt from 'bcryptjs';
-
-import formStyles from '../styles/passwordStyles';
-
+import formStyles from '../styles/formStyles';
+import appStyles from '../styles/appStyles';
 import axios from 'axios';
 
 export async function ModifierPassword(id, password) {
     try {
-        const response = await axios.patch('http://192.168.1.16:80/UpdatePassword', { id,password});
+        const response = await axios.patch('http://192.168.1.16:8080/UpdatePassword', { id, password });
         return Promise.resolve(response.data); // Renvoyer la réponse du serveur
     } catch (error) {
         return Promise.reject({ error });
     }
 }
+
+const passwordSchema = Yup.object().shape({
+    actuelpassword: Yup.string().required("S'il vous plaît entrez votre mot de passe actuel"),
+    password: Yup.string()
+        .required("S'il vous plaît entrez votre nouveau mot de passe.")
+        .matches(
+            /^(?=.*[A-Z])(?=.*[!@#$%^&*])(?=.*[0-9])(?=.*[a-z]).{8,}$/,
+            'Le mot de passe doit contenir au moins une lettre majuscule, un symbole, un chiffre et avoir une longueur minimale de 8 caractères'
+        ),
+    confirmPassword: Yup.string().oneOf([Yup.ref('password'), null], 'Les mots de passe ne correspondent pas.'),
+});
+
 const comparePassword = (password, hashedPassword) => {
-    const match = bcrypt.compareSync(password,hashedPassword);
+    const match = bcrypt.compareSync(password, hashedPassword);
     return match;
 };
 
-
 function Password({ route }) {
-    const { user} = route.params;
-    
-    const [actuelpassword, setActuelpassword] = useState('');
-    const [password, setPassword] = useState('');
-    const [confirmPassword, setConfirmPassword] = useState('');
-   
+    const { user } = route.params;
 
+    const [isSuccess, setIsSuccess] = useState(false);
+    const formRef = useRef(null);
 
-
-
-    
-   
-    
-    const handleActuelpasswordChange = (text) => {
-       setActuelpassword(text);
-    };
-
-    const handlePasswordChange = (text) => {
-        setPassword(text);
-    };
-
-    const handleConfirmPasswordChange = (text) => {
-        setConfirmPassword(text);
-    };
-
-    const handleCreateAccount = async () => {
-        
-
-        if (actuelpassword === '') {
-            Alert.alert('Erreur', "S'il vous plaît entrez votre mot de passe actuel");
-            return;
-        }
-       
-
-        const isMatch = comparePassword(actuelpassword,user.password);
-        if (isMatch) {
-            console.log('Mot de passe correct');
-        } else {
-            console.log('Mot de passe incorrect');
-            Alert.alert('Erreur', 'Mot de passe  actuel incorrect');
-            return;
-        }
-        if (password === '') {
-            Alert.alert('Erreur', "S'il vous plaît entrez votre nouveau mot de passe.");
-            return;
-        }
-
-        if (confirmPassword === '') {
-            Alert.alert('Erreur', "Veuillez confirmer votre mot de passe.");
-            return;
-        }
-
-        if (password !== confirmPassword) {
-            Alert.alert('Erreur', 'Les mots de passe ne correspondent pas.');
-            return;
-        }
-        if (!validatePassword(password)) {
-            Alert.alert('Erreur', 'Le mot de passe doit contenir au moins un symbole, une lettre majuscule et avoir une longueur minimale de 8 caractères');
-            return;
-        }
-
-       
+    const handleCreateAccount = async (values, { resetForm }) => {
         try {
-            const id=user._id ;
-            const response = await ModifierPassword(id, password);
+            await passwordSchema.validate(values, { abortEarly: false });
+
+            // Check if the entered actuelpassword matches the user's current password
+            const isMatch = comparePassword(values.actuelpassword, user.password);
+            if (!isMatch) {
+                console.log('Mot de passe incorrect');
+                Alert.alert('Erreur', 'Mot de passe actuel incorrect');
+                return;
+            }
+
+            // If the validations and password match are successful, continue with the password modification
+            const id = user._id;
+            const response = await ModifierPassword(id, values.password);
             console.log('Server response:', response.mssg);
-            
-                Alert.alert('Succès',response.mssg)
-                
-                setActuelpassword('');
-                setPassword('');
-                setConfirmPassword('');
-               
-            
+            setIsSuccess(true);
 
+            // Reset the Formik form after a successful password modification
+            resetForm({ values: { actuelpassword: '', password: '', confirmPassword: '' } });
         } catch (error) {
-            console.log('Error:', error);
+            // If the validations fail, setIsSuccess to false
+            setIsSuccess(false);
         }
-
-
-
-
     };
 
-    
-    const validatePassword = (password) => {
-
-        const symbolRegex = /[-!$%^&*()_+|~=`{}\[\]:";'<>?,.\/]/;
-        const uppercaseRegex = /[A-Z]/;
-        return symbolRegex.test(password) && uppercaseRegex.test(password) && password.length >= 8;
-    };
     return (
-        <View style={formStyles.container}>
-           
-            <View style={formStyles.contentContainer}>
-                <Text style={formStyles.text}>Changer le mot de passe</Text>
-                <TextInput
-                    style={formStyles.input}
-                    placeholder="Mot de passe actuel"
-                    value={actuelpassword}
-                    onChangeText={handleActuelpasswordChange}
-                    secureTextEntry
+        <View style={appStyles.container}>
+            <Formik
+                initialValues={{ actuelpassword: '', password: '', confirmPassword: '' }}
+                onSubmit={(values, actions) => handleCreateAccount(values, actions)}
+                validationSchema={passwordSchema}
+                innerRef={(formik) => (formRef.current = formik)}
+            >
+                {({ handleChange, handleSubmit, values, touched, errors }) => (
+                    <View style={formStyles.container}>
+                        <Text style={formStyles.text}>Changer le mot de passe</Text>
+                        {touched.actuelpassword && errors.actuelpassword && (
+                            <Text style={formStyles.errorText}>{errors.actuelpassword}</Text>
+                        )}
+                        <TextInput
+                            style={formStyles.input}
+                            placeholder="Mot de passe actuel"
+                            value={values.actuelpassword}
+                            onChangeText={handleChange('actuelpassword')}
+                            secureTextEntry
+                            onBlur={() => setIsSuccess(false)}
+                        />
+                        {touched.password && errors.password && <Text style={formStyles.errorText}>{errors.password}</Text>}
+                        <TextInput
+                            style={formStyles.input}
+                            placeholder="Nouveau mot de passe"
+                            value={values.password}
+                            onChangeText={handleChange('password')}
+                            secureTextEntry
+                            onBlur={() => setIsSuccess(false)}
+                        />
+                        {touched.confirmPassword && errors.confirmPassword && (
+                            <Text style={formStyles.errorText}>{errors.confirmPassword}</Text>
+                        )}
+                        <TextInput
+                            style={formStyles.input}
+                            placeholder="Confirmer le mot de passe"
+                            value={values.confirmPassword}
+                            onChangeText={handleChange('confirmPassword')}
+                            secureTextEntry
+                            onBlur={() => setIsSuccess(false)}
+                        />
+                        {isSuccess && <Text style={{ color: 'green' }}>Mot de passe modifié avec succès!</Text>}
+                        <TouchableOpacity style={formStyles.button} onPress={() => formRef.current.submitForm()}>
+                            <Text style={formStyles.buttonText}>Enregistrer</Text>
+                        </TouchableOpacity>
 
-                />
-                <TextInput
-                    style={formStyles.input}
-                    placeholder="Nouveau mot de passe"
-                    value={password}
-                    onChangeText={handlePasswordChange}
-                    secureTextEntry
-                />
-                <TextInput
-                    style={formStyles.input}
-                    placeholder="Confirmer le mot de passe"
-                    value={confirmPassword}
-                    onChangeText={handleConfirmPasswordChange}
-                    secureTextEntry
-                />
-                <TouchableOpacity style={formStyles.button} onPress={handleCreateAccount}>
-                    <Text style={formStyles.buttonText}>Enregistrer</Text>
-                </TouchableOpacity>
-           </View>
-           
-            
+                    </View>
+                )}
+            </Formik>
         </View>
     );
 }

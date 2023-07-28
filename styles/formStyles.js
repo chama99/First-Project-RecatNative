@@ -1,7 +1,6 @@
 import { StyleSheet } from 'react-native';
-import { Dimensions } from 'react-native';
 
-const { height, width } = Dimensions.get('window');
+
 
 export default StyleSheet.create({
     // Autres styles...
@@ -90,7 +89,7 @@ export default StyleSheet.create({
         marginTop: 20,
         borderWidth: 2,
         borderColor: '#fff',
-        
+        alignSelf: 'center',
       
     },
     iconContainer: {

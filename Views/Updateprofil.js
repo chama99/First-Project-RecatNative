@@ -2,13 +2,13 @@ import React, { useState } from 'react';
 import { View, TextInput, TouchableOpacity, Text, Alert, Image } from 'react-native';
 import { FontAwesome } from '@expo/vector-icons';
 import appStyles from '../styles/appStyles';
-import formStyles from '../styles/profilStyles';
+import formStyles from '../styles/formStyles';
 import * as ImagePicker from 'expo-image-picker';
 import axios from 'axios';
 
 export async function ModifierUser(id, nom, prenom, image) {
     try {
-        const response = await axios.patch('http://192.168.1.16:80/UpdateUser', { id, nom, prenom, image });
+        const response = await axios.patch('http://192.168.1.16:8080/UpdateUser', { id, nom, prenom, image });
         return Promise.resolve(response.data); // Renvoyer la réponse du serveur
     } catch (error) {
         return Promise.reject({ error });
@@ -90,12 +90,19 @@ function UpdateProfil({ route, navigation }) {
 
     return (
         <View style={appStyles.container}>
-            <View>
-                <Image source={image} style={formStyles.imgp} />
-                <TouchableOpacity onPress={handleImagePicker} style={formStyles.iconContainer}>
-                    <FontAwesome name="image" style={formStyles.icon} />
-                </TouchableOpacity>
-
+            <View style={formStyles.container}>
+                <View style={{ flexDirection: 'row', alignSelf: 'center', }}>
+                    <Image source={image} style={{
+                        width: 100,
+                        height: 100,
+                        borderRadius: 50,
+                        marginBottom: 20,
+                        marginTop:20
+                      }} />
+                    <TouchableOpacity onPress={handleImagePicker} style={formStyles.iconContainer}>
+                        <FontAwesome name="image" style={formStyles.icon} />
+                    </TouchableOpacity>
+                </View>
                 <TextInput
                     style={formStyles.input}
                     placeholder="Nom"

@@ -11,7 +11,7 @@ import Accueil from './Accueil';
 
 const fetchUser = async (id) => {
     try {
-        const response = await axios.get(`http://192.168.1.16:80/getById/${id}`);
+        const response = await axios.get(`http://192.168.1.16:8080/getById/${id}`);
         console.log(response.data);
         return response.data.user;
     } catch (error) {

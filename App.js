@@ -27,8 +27,8 @@ function App() {
       <Stack.Screen name="CreatePost" component={CreatePost} options={{ headerTitle: 'Créer une publication', }} />
       <Stack.Screen name="Profil" component={Profil} options={{ headerTitle: '', }} />
       <Stack.Screen name="Deconnexion" component={Deconnexion} options={{ headerShown: false }} />
-      <Stack.Screen name="UpdateProfil" component={UpdateProfil}  />
-      <Stack.Screen name="Password" component={Password} options={{ headerTitle: '', }} />
+      <Stack.Screen name="UpdateProfil" component={UpdateProfil} options={{ headerTitle: 'Modifier le profil', }} />
+      <Stack.Screen name="Password" component={Password} options={{ headerTitle: 'Changer le mot de passe', }} />
       <Stack.Screen name="ResetPassword" component={ResetPassword} options={{ headerTitle: '', }} />
       
 

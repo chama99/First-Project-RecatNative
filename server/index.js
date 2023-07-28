@@ -7,7 +7,7 @@ const cors=require('cors')
 app.use(express.json())
 app.use(express.urlencoded({extended:true}))
 app.use('/',routeuser)
-// Configuration de Multer pour la gestion des fichiers
+/* // Configuration de Multer pour la gestion des fichiers
 const storage = multer.diskStorage({
     destination: function (req, file, cb) {
         cb(null, 'uploads/'); // Répertoire de stockage des images
@@ -26,6 +26,6 @@ app.post('/upload', upload.single('image'), (req, res) => {
     } else {
         res.send('Image téléchargée avec succès');
     }
-});
+});*/
 app.use(cors());
-app.listen(80)
+app.listen(8080)

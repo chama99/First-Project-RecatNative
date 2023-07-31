@@ -1,4 +1,4 @@
-import { BackHandler, View, Text, TouchableOpacity, Image, StyleSheet, ScrollView,TextInput} from 'react-native'
+import { Alert, BackHandler, View, Text, TouchableOpacity, Image, StyleSheet, ScrollView,TextInput} from 'react-native'
 import React ,{ useState,useEffect } from 'react'
 
 
@@ -99,7 +99,24 @@ function Profil ({ route, navigation})  {
     };
 
    
-
+    const showLogoutConfirmation = () => {
+        Alert.alert(
+            'Confirmation de déconnexion',
+            'Êtes-vous sûr de vouloir vous déconnecter ?',
+            [
+                {
+                    text: 'Annuler',
+                    style: 'cancel',
+                },
+                {
+                    text: 'Déconnexion',
+                    onPress: () => {
+                        navigation.navigate('Deconnexion');
+                    },
+                },
+            ]
+        );
+    };
   
     const goToPost = () => {
         navigation.navigate('CreatePost');
@@ -257,6 +274,12 @@ function Profil ({ route, navigation})  {
                 ))}
 
             </ScrollView>
+            <View style={styles.container}>
+                <TouchableOpacity style={[styles.pube, { alignItems: 'center', justifyContent: 'center', }]} onPress={showLogoutConfirmation}>
+                    
+                    <Text style={styles.textd}>Se déconnecter</Text>
+                </TouchableOpacity>
+            </View>
         </View>
     );
 };
@@ -266,7 +289,7 @@ const styles = StyleSheet.create({
         flexDirection:'column',
         padding: 16,
         backgroundColor: 'white',
-        marginBottom: 10
+      
     },
     container1: {
         padding: 16,
@@ -340,6 +363,11 @@ const styles = StyleSheet.create({
     texte: {
         fontSize: 14,
         alignSelf: 'flex-start',
+        fontWeight: 'bold',
+    },
+    textd: {
+        fontSize: 14,
+        alignSelf: 'center',
         fontWeight: 'bold',
     },
     textee: {

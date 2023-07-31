@@ -1,10 +1,9 @@
 import React, { useEffect, useState } from 'react';
 import { BackHandler, View, Text, Image, StyleSheet, Alert } from 'react-native';
-import { Appbar, BottomNavigation } from 'react-native-paper';
-import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
+import {  BottomNavigation } from 'react-native-paper';
+
 import homeStyles from '../styles/homeStyle';
-import { TouchableOpacity } from 'react-native';
-import { FontAwesome } from '@expo/vector-icons';
+
 import { Ionicons } from '@expo/vector-icons';
 import axios from 'axios';
 import Accueil from './Accueil';
@@ -63,7 +62,10 @@ const Home = ({ route, navigation }) => {
     const [routes] = useState([
         { key: 'home', title: 'Accueil', icon: 'home' },
         { key: 'messages', title: 'Messages', icon: 'account' },
+        { key: 'rechercher', title: 'Rechercher', icon: 'rechercher' },
         { key: 'notifications', title: 'Notifications', icon: 'notifications' },
+        
+       
     ]);
 
     const renderScene = BottomNavigation.SceneMap({
@@ -72,38 +74,28 @@ const Home = ({ route, navigation }) => {
 
         ),
        messages: () => (
-            <View style={homeStyles.container}>
-                <View style={homeStyles.contentContainer}>
-                    <Image source={ImageSource} style={homeStyles.profileImage} />
-                    <Text style={homeStyles.greetingText}>{user ? `${user.nom} ${user.prenom}` : ''}</Text>
-                    <Text style={homeStyles.Text}>Email: {user ? user.email : ''}</Text>
-                </View>
-                <View style={homeStyles.Container}>
-                    <TouchableOpacity style={homeStyles.editButton} onPress={goToProfil}>
-                        <FontAwesome name="edit" style={homeStyles.editIcon} />
-                        <Text style={homeStyles.editText}>Modifier le profil</Text>
-                    </TouchableOpacity>
-                    <TouchableOpacity style={homeStyles.editButton} onPress={goToPassword}>
-                        <FontAwesome name="edit" style={homeStyles.editIcon} />
-                        <Text style={homeStyles.editText}>Changer le mot de passe</Text>
-                    </TouchableOpacity>
-                </View>
+           <View style={homeStyles.contentContainer}>
+               <Text>Messages</Text>
             </View>
         ),
-        logout: () => (
+        rechercher: () => (
             <View style={homeStyles.contentContainer}>
-                <Text>Êtes-vous sûr de vouloir vous déconnecter ?</Text>
-                <Text>Appuyez sur le bouton "Déconnexion" pour confirmer.</Text>
+                <Text>Rechercher</Text>
+                
+            </View>
+        ),
+        notifications: () => (
+            <View style={homeStyles.contentContainer}>
+                <Text>Notifications</Text>
+
             </View>
         ),
     });
 
     const handleIndexChange = (newIndex) => {
-        if (newIndex === 2) {
-            showLogoutConfirmation();
-        } else {
+       
             setIndex(newIndex);
-        }
+        
     };
 
     const showLogoutConfirmation = () => {
@@ -135,9 +127,13 @@ const Home = ({ route, navigation }) => {
             case 'messages':
                 iconName = 'ios-chatbubble-ellipses-sharp';
                 break;
+            case 'rechercher':
+                iconName = 'search';
+                break;
             case 'notifications':
                 iconName = 'notifications';
                 break;
+           
             default:
                 iconName = 'home';
         }

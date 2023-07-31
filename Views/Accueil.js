@@ -21,7 +21,18 @@ const Accueil = ({ user, navigation }) => {
     const [NbrLike, setNbrLike] = useState(22);
     const [NbrComment, setNbrComment] = useState(0);
     const [sendcomment, setSendComment] = useState(false);
-    const [posts, setPosts] = useState([user]);
+    const [posts, setPosts] = useState([{
+        _id: '1',
+        image: require('../assets/whitecape1.png'),
+        nom: 'John',
+        prenom: 'Doe',
+        postImages: [
+            { uri: require('../assets/whitecape1.png') },
+            { uri: require('../assets/profil.png') },
+            { uri: require('../assets/whitecape1.png') },
+        ],
+    },
+  ]);
 
     const handleLike = () => {
         setLiked(!liked);
@@ -99,7 +110,15 @@ const Accueil = ({ user, navigation }) => {
                                 </View>
                                 <Feather name="more-horizontal" style={styles.Icon2} />
                             </View>
-                            {image && <Image source={require('../assets/whitecape1.png')} />}
+                            <ScrollView horizontal>
+                                <View style={styles.imageContainer}>
+                                    {user.postImages.map((image, index) => (
+                                        <View key={index}>
+                                            <Image source={image.uri} style={styles.selectedImage} />
+                                        </View>
+                                    ))}
+                                </View>
+                            </ScrollView>
                             <View style={styles.container3}>
                                 <View style={{ flexDirection: 'row' }}>
                                     <AntDesign name="like2" size={24} color="black" />
@@ -335,7 +354,9 @@ const styles = StyleSheet.create({
         height: 26,
         backgroundColor: '#DCDCDC',
     },
- 
+    imageContainer: {
+        flexDirection: 'row',
+    },
 
 });
 

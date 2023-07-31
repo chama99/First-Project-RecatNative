@@ -67,7 +67,7 @@ exports.register = (nom, prenom, email, password, image) => {
 //verification email
 const sendVerificationEmail = ({ _id, email }) => {
 
-    const currentUrl = "http://192.168.3.121";
+    const currentUrl = "http://192.168.1.16";
 
     const uniqueString = uuidv4() + _id;// kima token 
     //chnwa chikoun fyh email 
@@ -160,7 +160,7 @@ exports.verify = (req, res) => {
                                     .then(() => {
                                         UserVerification.deleteOne({ userId })
                                             .then(() => {
-                                                res.sendFile(path.join(__dirname, "./verified.html"));
+                                                res.sendFile(path.join(__dirname, "../models/verified.html"));
                                             })
                                             .catch(error => {
                                                 console.log(" Error updating account", error);
@@ -197,7 +197,7 @@ exports.verify = (req, res) => {
 
 exports.verified = (req, res) => {
 
-    res.sendFile(path.join(__dirname, "./verified.html"))
+    res.sendFile(path.join(__dirname, "../models/verified.html"))
 
 
 }

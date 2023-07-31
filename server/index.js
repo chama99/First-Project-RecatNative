@@ -1,5 +1,5 @@
 const express=require('express')
-
+const routepost = require('./routes/post.route')
 const routeuser=require('./routes/user.route')
 const app=express()
 const multer = require('multer');
@@ -7,6 +7,7 @@ const cors=require('cors')
 app.use(express.json())
 app.use(express.urlencoded({extended:true}))
 app.use('/',routeuser)
+app.use('/',routepost)
 /* // Configuration de Multer pour la gestion des fichiers
 const storage = multer.diskStorage({
     destination: function (req, file, cb) {

@@ -9,7 +9,7 @@ import axios from 'axios';
 
 export async function ModifierPassword(id, password) {
     try {
-        const response = await axios.patch('http://192.168.30.181:8080/UpdatePassword', { id, password });
+        const response = await axios.patch('http://192.168.30.112:8080/UpdatePassword', { id, password });
         return Promise.resolve(response.data); // Renvoyer la réponse du serveur
     } catch (error) {
         return Promise.reject({ error });

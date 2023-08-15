@@ -65,7 +65,7 @@ exports.getPostsByIdUser = (id) => {
         mongoose.connect(url).then(() => {
             // Use a query object to filter posts with non-empty "nom" field
             return Post.find({
-                userId: id});
+                'userId._id': id});
         }).then((doc) => {
             mongoose.disconnect();
             resolve(doc);

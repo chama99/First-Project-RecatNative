@@ -17,7 +17,7 @@ const ResetPassword = ({ navigation }) => {
 
     const forgetPassword = async () => {
         try {
-            const response = await axios.post('http://192.168.30.181:8080/ForgetPassword', {
+            const response = await axios.post('http://192.168.30.112:8080/ForgetPassword', {
                 email,
 
             });

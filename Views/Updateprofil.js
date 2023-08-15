@@ -8,7 +8,7 @@ import axios from 'axios';
 
 export async function ModifierUser(id, nom, prenom, image) {
     try {
-        const response = await axios.patch('http://192.168.30.181:8080/UpdateUser', { id, nom, prenom, image });
+        const response = await axios.patch('http://192.168.30.112:8080/UpdateUser', { id, nom, prenom, image });
         return Promise.resolve(response.data); // Renvoyer la réponse du serveur
     } catch (error) {
         return Promise.reject({ error });
@@ -24,6 +24,7 @@ function UpdateProfil({ route, navigation }) {
     }
 
     const [name, setName] = useState(user.nom);
+    console.log(user.nom)
     const [prenom, setPrenom] = useState(user.prenom);
     const [email, setEmail] = useState(user.email);
     const [image, setSelectedImageSource] = useState(ImageSource);

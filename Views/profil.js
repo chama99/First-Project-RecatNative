@@ -1,7 +1,7 @@
-import { Alert, BackHandler, View, Text, TouchableOpacity, Image, StyleSheet, ScrollView,TextInput} from 'react-native'
+import { Alert, BackHandler, View, Text, TouchableOpacity, Image, StyleSheet, ScrollView, TextInput, RefreshControl } from 'react-native'
 import React ,{ useState,useEffect } from 'react'
 
-
+import defaultImage from '../assets/prof.png';
 import axios from 'axios';
 import Modal from 'react-native-modal';
 
@@ -9,13 +9,12 @@ import {
     Ionicons,
     MaterialIcons,
     FontAwesome,
-    Feather,
     AntDesign,
     
 } from '@expo/vector-icons';
 const fetchUser = async (id) => {
     try {
-        const response = await axios.get(`http://192.168.30.181:8080/getById/${id}`);
+        const response = await axios.get(`http://192.168.30.112:8080/getById/${id}`);
         console.log(response.data);
         return response.data.user;
     } catch (error) {
@@ -34,16 +33,34 @@ function Profil ({ route, navigation})  {
     const [NbrLike, setNbrLike] = useState(22);
     const [NbrComment, setNbrComment] = useState(0);
     const [sendcomment, setSendComment] = useState(false);
-    const [posts, setPosts] = useState([user]);
+   
     const [showOptions, setShowOptions] = useState(false);
+    const [posts, setPosts] = useState([]);
+    const [refreshing, setRefreshing] = useState(false);
 
+    const onRefresh = () => {
+        setRefreshing(true);
+        // Mettez ici votre logique pour actualiser les données (par exemple, rappeler fetchPosts())
+        fetchPosts(id)
+        // Une fois l'actualisation terminée, définissez refreshing sur false pour arrêter l'indicateur de chargement.
+        setRefreshing(false);
+    };
+    const fetchPosts = async (id) => {
+        try {
+            const response = await axios.get(`http://192.168.30.112:8080/getPostById/${id}`);
+            setPosts(response.data.posts);
+        } catch (error) {
+            console.log(error);
+        }
+    };
+
+    useEffect(() => {
+        fetchPosts(id);
+    }, []);
     const handleMoreOptions = () => {
         setShowOptions(!showOptions); // Inverser la valeur de showOptions pour afficher ou masquer le contenu bloqué
     };
-    const firstName = user?.nom || '';
-    const lastName = user?.prenom || '';
-    const idd = user?._id || '';
-    const email = user?.email || '';
+   
     useEffect(() => {
         const blockBackButton = () => true;
         const backHandler = BackHandler.addEventListener('hardwareBackPress', blockBackButton);
@@ -67,7 +84,10 @@ function Profil ({ route, navigation})  {
         setUser(updatedUserData);
     };
 
+    const firstName = user?.nom || '';
+    const lastName = user?.prenom || '';
 
+    const email = user?.email || '';
     let ImageSource = require('../assets/prof.png');
     if (user && user.image && user.image.uri !== "require('../assets/prof.png')") {
         ImageSource = { uri: user.image.uri };
@@ -148,19 +168,25 @@ function Profil ({ route, navigation})  {
 
                 </View>
             </View>
-            <ScrollView>
+            <ScrollView
+                refreshControl={
+                    <RefreshControl
+                        refreshing={refreshing}
+                        onRefresh={onRefresh}
+                    />
+                }
+            >
                 <View style={styles.container1}>
                     <TouchableOpacity style={styles.pub} onPress={goToPost}>
                         <Text>Créer une publication</Text>
                     </TouchableOpacity>
                     <View style={styles.divider} />
-                    <View style={styles.container3}>
+                    <View style={[styles.container3, { flexDirection: "row" }]}>
                         <View style={{ flexDirection: 'row' }}>
                             <TouchableOpacity style={styles.pub} >
                                 <Ionicons name="ios-videocam" size={22} color="#F44337" />
                                 <Text>Live</Text>
                             </TouchableOpacity>
-
                         </View>
                         <View style={styles.separator} />
                         <View style={{ flexDirection: 'row' }}>
@@ -168,111 +194,111 @@ function Profil ({ route, navigation})  {
                                 <MaterialIcons name="photo-size-select-actual" size={20} color="#4CAF50" />
                                 <Text>Photo</Text>
                             </TouchableOpacity>
-
-
                         </View>
                     </View>
                 </View>
-                {posts.map((user) => (
-                    <View key={idd}>
+                {
+                    posts.map((post) => (
+                        <View key={post._id}>
+                            <View style={styles.container1}>
+                                <View style={styles.container3}>
 
-                        <View style={styles.container1}>
-                            <View style={styles.container3}>
-                             <Image source={ImageSource} style={styles.Image} />
-                                <View style={{ flexDirection: 'column' }}>
-                                    <Text style={styles.text}>{user ? `${user.nom} ${user.prenom}` : ''}</Text>
-                                    <Text style={styles.text}>9mm</Text>
-                                </View>
-                                <TouchableOpacity onPress={handleMoreOptions}>
-                                    <Feather name="more-horizontal" style={styles.Icon2} />
-                                </TouchableOpacity>
-                                {/* Contenu bloqué */}
-                                {showOptions && (
-                                    <View style={styles.optionsContainer}>
-                                        {/* Option Modifier */}
-                                        <TouchableOpacity style={styles.optionItem} onPress={() => console.log('Action de modification')}>
-                                            <Feather name="edit" style={styles.optionIcon} />
-                                        </TouchableOpacity>
+                                    <View style={{ flexDirection: 'row' }}>
+                                        <Image source={post.userId.image.uri == "require('../assets/prof.png')" ? defaultImage : { uri: post.userId.image.uri }} style={styles.Image} />
 
-                                        {/* Option Supprimer */}
-                                        <TouchableOpacity style={styles.optionItem} onPress={() => console.log('Action de suppression')}>
-                                            <Feather name="trash-2" style={styles.optionIcon} />
-                                        </TouchableOpacity>
-                                    </View>
-                                )}
-
-                            </View>
-                           <Image source={require('../assets/whitecape1.png')} />
-                            <View style={styles.container3}>
-                                <View style={{ flexDirection: 'row' }}>
-                                    <AntDesign name="like2" size={24} color="black" />
-                                    <Text style={{ paddingLeft: 10, paddingTop: 5 }}>{NbrLike}</Text>
-                                </View>
-                                <Text>{NbrComment} commentaires</Text>
-                            </View>
-                            <View style={styles.divider} />
-                            <View style={styles.container3}>
-                                <TouchableOpacity style={{ flexDirection: 'row' }} onPress={handleLike}>
-                                    <AntDesign
-                                        name={liked ? 'like1' : 'like2'}
-                                        size={24}
-                                        color={liked ? 'rgb(143, 71, 155)' : 'black'}
-                                    />
-                                    <Text style={{ paddingLeft: 10, paddingTop: 5, color: liked ? 'rgb(143, 71, 155)' : 'black' }}>
-                                        J'aime
-                                    </Text>
-                                </TouchableOpacity>
-                                <TouchableOpacity style={{ flexDirection: 'row' }} onPress={togglePopup}>
-                                    <FontAwesome name="comment-o" size={24} color="black" />
-                                    <Text style={{ paddingLeft: 10, paddingTop: 5 }}>Commenter</Text>
-                                </TouchableOpacity>
-                                <Modal
-                                    isVisible={showPopup}
-                                    backdropOpacity={0.5}
-                                    onBackdropPress={togglePopup}
-                                    style={{ marginTop: 20, margin: 0, justifyContent: 'flex-end' }}
-                                >
-                                    <View style={{ flex: 1, backgroundColor: 'white', padding: 20 }}>
-                                        <TouchableOpacity onPress={togglePopup} style={{ alignSelf: 'flex-end' }}>
-                                            <AntDesign name="close" size={24} color="black" />
-                                        </TouchableOpacity>
-                                        <ScrollView>
-                                            {comments.map((item, index) => (
-                                                <View style={{ flexDirection: 'row' }} key={index}>
-                                                    {user.image && <Image source={user.image} style={styles.Image} />}
-                                                    <View style={styles.comment}>
-                                                        <Text style={styles.textcomment}>{user.nom} {user.prenom}</Text>
-                                                        <Text >{item}</Text>
-                                                    </View>
-                                                </View>
-                                            ))}
-
-
-
-                                        </ScrollView>
-                                        <View style={styles.commentInputContainer}>
-                                            <TextInput
-                                                value={comment}
-                                                onChangeText={text => setComment(text)}
-                                                placeholder="Écrire un commentaire..."
-                                                style={styles.commentInput}
-                                            />
-                                            <TouchableOpacity onPress={sendComment}>
-                                                <Ionicons
-                                                    name={sendcomment ? 'send' : 'send-outline'}
-                                                    size={24}
-                                                    style={{ color: sendcomment ? 'rgb(143, 71, 155)' : 'black' }}
-                                                />
-                                            </TouchableOpacity>
+                                        <View style={{ flexDirection: 'column' }}>
+                                            <Text style={styles.text}> {post.userId.prenom} {post.userId.nom}</Text>
+                                            <Text style={styles.text}>9mm</Text>
                                         </View>
+
+
                                     </View>
-                                </Modal>
+                                    <Text style={styles.textdes}>{post.desc} {post.desc}</Text>
+
+                                </View>
+                                <ScrollView horizontal>
+                                    <View style={styles.imageContainer}>
+                                        {post.img.map((image, index) => {
+                                            console.log("Image URL:", image); // Vérifiez le contenu des URLs ici
+                                            return (
+                                                <View key={index}>
+                                                    <Image source={{ uri: image }} style={styles.selectedImage} />
+                                                </View>
+                                            );
+                                        })}
+                                    </View>
+                                </ScrollView>
+
+
+                                <View style={[styles.container3, { flexDirection: "row" }]}>
+                                    <View style={{ flexDirection: 'row' }}>
+                                        <AntDesign name="like2" size={24} color="black" />
+                                        <Text style={{ paddingLeft: 10, paddingTop: 5 }}>{NbrLike}</Text>
+                                    </View>
+                                    <Text>{NbrComment} commentaires</Text>
+                                </View>
+                                <View style={styles.divider} />
+                                <View style={[styles.container3, { flexDirection: "row" }]}>
+                                    <TouchableOpacity style={{ flexDirection: 'row' }} onPress={handleLike}>
+                                        <AntDesign
+                                            name={liked ? 'like1' : 'like2'}
+                                            size={24}
+                                            color={liked ? 'rgb(143, 71, 155)' : 'black'}
+                                        />
+                                        <Text style={{ paddingLeft: 10, paddingTop: 5, color: liked ? 'rgb(143, 71, 155)' : 'black' }}>
+                                            J'aime
+                                        </Text>
+                                    </TouchableOpacity>
+                                    <TouchableOpacity style={{ flexDirection: 'row' }} onPress={togglePopup}>
+                                        <FontAwesome name="comment-o" size={24} color="black" />
+                                        <Text style={{ paddingLeft: 10, paddingTop: 5 }}>Commenter</Text>
+                                    </TouchableOpacity>
+                                    <Modal
+                                        isVisible={showPopup}
+                                        backdropOpacity={0.5}
+                                        onBackdropPress={togglePopup}
+                                        style={{ marginTop: 20, margin: 0, justifyContent: 'flex-end' }}
+                                    >
+                                        <View style={{ flex: 1, backgroundColor: 'white', padding: 20 }}>
+                                            <TouchableOpacity onPress={togglePopup} style={{ alignSelf: 'flex-end' }}>
+                                                <AntDesign name="close" size={24} color="black" />
+                                            </TouchableOpacity>
+                                            <ScrollView>
+                                                {comments.map((item, index) => (
+                                                    <View style={{ flexDirection: 'row' }} >
+                                                        {user.image && <Image source={user.image} style={styles.Image} />}
+                                                        <View style={styles.comment}>
+                                                            <Text style={styles.textcomment}>{user.nom} {user.prenom}</Text>
+                                                            <Text >{item}</Text>
+                                                        </View>
+                                                    </View>
+                                                ))}
+
+
+
+                                            </ScrollView>
+                                            <View style={styles.commentInputContainer}>
+                                                <TextInput
+                                                    value={comment}
+                                                    onChangeText={text => setComment(text)}
+                                                    placeholder="Écrire un commentaire..."
+                                                    style={styles.commentInput}
+                                                />
+                                                <TouchableOpacity onPress={sendComment}>
+                                                    <Ionicons
+                                                        name={sendcomment ? 'send' : 'send-outline'}
+                                                        size={24}
+                                                        style={{ color: sendcomment ? 'rgb(143, 71, 155)' : 'black' }}
+                                                    />
+                                                </TouchableOpacity>
+                                            </View>
+                                        </View>
+                                    </Modal>
+                                </View>
                             </View>
                         </View>
-                    </View>
-
-                ))}
-
+                    )).reverse()
+                }
             </ScrollView>
             <View style={styles.container}>
                 <TouchableOpacity style={[styles.pube, { alignItems: 'center', justifyContent: 'center', }]} onPress={showLogoutConfirmation}>
@@ -302,7 +328,7 @@ const styles = StyleSheet.create({
     },
     container3: {
         justifyContent: 'space-between',
-        flexDirection: 'row',
+        flexDirection: 'column',
     },
     profileImage: {
         width: 100,
@@ -494,6 +520,15 @@ const styles = StyleSheet.create({
     optionText: {
         fontSize: 16,
         color: 'black',
+    },
+    imageContainer: {
+        flexDirection: 'row',
+    },
+    selectedImage: {
+        width: 400,
+        height: 400,
+
+
     },
 
 });

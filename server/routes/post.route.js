@@ -12,6 +12,6 @@ route.get('/getpost', (req, res) => {
 })
 route.get('/getPostById/:id', (req, res) => {
 
-    postmodel.getPostsByIdUser(req.params.id).then((mssg) => res.json({ post: mssg })).catch((err) => res.status(400).json(err))
+    postmodel.getPostsByIdUser(req.params.id).then((mssg) => res.json({ posts: mssg })).catch((err) => res.status(400).json(err))
 })
 module.exports = route

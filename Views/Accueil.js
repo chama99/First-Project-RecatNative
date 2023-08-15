@@ -24,7 +24,7 @@ const Accueil = ({ user, navigation }) => {
     };
     const fetchPosts = async () => {
         try {
-            const response = await axios.get('http://192.168.30.181:8080/getpost');
+            const response = await axios.get('http://192.168.30.112:8080/getpost');
             setPosts(response.data.posts);
         } catch (error) {
             console.log(error);
@@ -86,7 +86,7 @@ const Accueil = ({ user, navigation }) => {
                         onRefresh={onRefresh}
                     />
                 }
-            >
+             >
                 <View style={styles.container1}>
                     <TouchableOpacity style={styles.pub} onPress={goToPost}>
                         <Text>Créer une publication</Text>
@@ -124,7 +124,7 @@ const Accueil = ({ user, navigation }) => {
                                        
                                         
                                     </View>
-                                    <Text style={styles.textdes}>{post.desc} {post.desc}</Text>
+                                    <Text style={styles.textdes}>{post.desc} </Text>
                                     
                                 </View>
                                 <ScrollView horizontal>

@@ -8,7 +8,7 @@ import { useNavigation } from '@react-navigation/native';
 export async function AddPost(userId,desc, img, likes, comments) {
     try {
        
-        const response = await axios.post('http://192.168.30.181:8080/addpost', {userId,desc, img, likes, comments });
+        const response = await axios.post('http://192.168.30.112:8080/addpost', {userId,desc, img, likes, comments });
         return Promise.resolve(response.data.mssg); // Renvoyer la réponse du serveur
     } catch (error) {
         return Promise.reject({ error });

@@ -10,7 +10,7 @@ import Accueil from './Accueil';
 
 const fetchUser = async (id) => {
     try {
-        const response = await axios.get(`http://192.168.30.181:8080/getById/${id}`);
+        const response = await axios.get(`http://192.168.30.112:8080/getById/${id}`);
         console.log(response.data);
         return response.data.user;
     } catch (error) {
